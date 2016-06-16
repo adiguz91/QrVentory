@@ -1,6 +1,7 @@
 package com.example.is2.test2qrventory;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -137,6 +138,12 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void nextActivity(Class class_name) {
+        Intent i = new Intent(getBaseContext(), class_name);
+        //i.putExtra("user", user);
+        startActivity(i);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -147,8 +154,10 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_printer) {
+            nextActivity(PrintActivity.class);
+        } else if (id == R.id.nav_scanner) {
+            nextActivity(ScanActivity.class);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {

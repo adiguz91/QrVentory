@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@color/dodgerblue"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:text="@string/function_name_select_xml"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <ListView
+            android:id="@+id/select_xml_list_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="top"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/select_xml_all_button"
+            android:layout_width="85dp"
+            android:layout_height="40dp"
+            android:layout_gravity="left"
+            android:layout_marginLeft="5dp"
+            android:text="@string/button_select_xml_all"
+            android:paddingTop="5.0px"
+            android:paddingBottom="10.0px"
+            android:paddingLeft="25.0px"
+            android:paddingRight="25.0px"
+            android:src="@drawable/ic_launcher" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="top"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/select_xml_ok_button"
+            android:layout_width="85dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="5dp"
+            android:paddingBottom="10.0px"
+            android:paddingLeft="25.0px"
+            android:paddingRight="25.0px"
+            android:paddingTop="5.0px"
+            android:src="@drawable/ic_launcher"
+            android:text="@string/button_select_xml_ok" />
+
+    </LinearLayout>
+
+</RelativeLayout>

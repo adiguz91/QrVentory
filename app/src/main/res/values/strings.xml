@@ -19,4 +19,25 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <string name="button_search_no">Select: Device is not selected</string>
+    <string name="button_search">"Select: "</string>
+
+    <string name="edittext_input_data"></string>
+
+    <string name="radiobutton_text">Add Text:</string>
+    <string name="radiobutton_qrcode">QRCode</string>
+
+    <string name="checkBox_text">Add Text:</string>
+
+    <string name="button_print">Print</string>
+
+    <string name="title_discover_printer">Discover Printer</string>
+
+    <string name="button_select_xml_no">Select: Form data is not selected</string>
+    <string name="function_name_select_xml">Form Data</string>
+    <string name="button_select_xml_all">All</string>
+    <string name="button_select_xml_ok">Done</string>
+    <string name="text_result">N/A</string>
+    <string name="text_view_printing_page">N/A</string>
 </resources>
