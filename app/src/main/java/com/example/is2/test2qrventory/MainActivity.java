@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.RequestQueue;
@@ -74,6 +75,9 @@ public class MainActivity extends AppCompatActivity
         initListView();
     }
 
+
+
+
     private void initListView() {
         listView = (ListView) findViewById(R.id.list);
         adapter = new CustomListAdapter(this, domains);
@@ -84,10 +88,6 @@ public class MainActivity extends AppCompatActivity
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        // changing action bar color
-        //getActionBar().setBackgroundDrawable(
-        //        new ColorDrawable(Color.parseColor("#1b1b1b")));
-
         String userApiKey = user.getApiKey();
         DomainAccess domainAccess = new DomainAccess(userApiKey);
         domainAccess.getDomains(this);
@@ -95,15 +95,6 @@ public class MainActivity extends AppCompatActivity
 
     /*public static synchronized MainActivity getInstance() {
         return activity_instance;
-    }*/
-
-
-
-    /*public RequestQueue getRequestQueue() {
-        if(queue == null) {
-            queue = Volley.newRequestQueue(this); // this.getApplicationContext()
-        }
-        return queue;
     }*/
 
     @Override
@@ -186,6 +177,26 @@ public class MainActivity extends AppCompatActivity
         // notifying list adapter about data changes
         // so that it renders the list view with updated data
         adapter.notifyDataSetChanged();
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> adapter,View v, int position, long id){
+
+                Domain item = (Domain) adapter.getItemAtPosition(position);
+
+                Intent intent = new Intent(getBaseContext(), CategoryItemActivity.class);
+                //based on item add info to intent
+                intent.putExtra("user", user);
+                intent.putExtra("domain_id", item.getIdDomain());
+
+                startActivity(intent);
+
+            }
+
+
+        });
 
     }
 

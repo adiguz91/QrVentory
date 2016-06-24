@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * Created by Adrian on 06.06.2016.
  */
@@ -30,6 +32,7 @@ public class User implements Parcelable {
         dest.writeString(Lastname);
         dest.writeParcelable(Image, flags);
         dest.writeString(ApiKey);
+        dest.writeList(Domains);
     }
 
     /**
@@ -45,6 +48,7 @@ public class User implements Parcelable {
         this.Lastname = in.readString();
         this.Image = in.readParcelable(null);
         this.ApiKey = in.readString();
+        this.Domains = in.readArrayList(null);
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -74,6 +78,7 @@ public class User implements Parcelable {
     private static String Lastname;
     private static Bitmap Image;
     private static String ApiKey;
+    private static List<Domain> Domains;
 
     public static String getPassword() {
         return Password;
@@ -129,4 +134,11 @@ public class User implements Parcelable {
         IdUser = idUser;
     }
 
+    public static List<Domain> getDomains() {
+        return Domains;
+    }
+
+    public static void setDomains(List<Domain> domains) {
+        Domains = domains;
+    }
 }

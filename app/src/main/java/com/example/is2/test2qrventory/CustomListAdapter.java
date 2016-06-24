@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.example.is2.test2qrventory.controller.AppController;
+import com.example.is2.test2qrventory.model.Category;
 import com.example.is2.test2qrventory.model.Domain;
 
 public class CustomListAdapter extends BaseAdapter {
@@ -70,7 +71,7 @@ public class CustomListAdapter extends BaseAdapter {
         title.setText(d.getName());
 
         // rating
-        rating.setText("Rating: " + String.valueOf(d.getDescription()));
+        rating.setText("Beschreibung: " + String.valueOf(d.getDescription()));
 
         // genre
         /*String genreStr = "";

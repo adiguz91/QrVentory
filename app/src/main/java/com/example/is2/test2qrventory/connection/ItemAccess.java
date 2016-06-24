@@ -13,6 +13,7 @@ import com.example.is2.test2qrventory.LoginActivity;
 import com.example.is2.test2qrventory.MainActivity;
 import com.example.is2.test2qrventory.controller.AppController;
 import com.example.is2.test2qrventory.model.Domain;
+import com.example.is2.test2qrventory.model.Item;
 import com.example.is2.test2qrventory.model.User;
 
 import org.json.JSONArray;
@@ -27,47 +28,43 @@ import java.util.Map;
 /**
  * Created by Adrian on 15.06.2016.
  */
-public class DomainAccess {
+public class ItemAccess {
 
-    private String url ="http://qrventory.square7.ch/v1/domain";
+    private String url ="http://qrventory.square7.ch/v1/item/";
     private String userApiKey;
-    private List<Domain> domain_list= new ArrayList<>();
+    private Item item;
 
-    public DomainAccess(String userApiKey) {
+    public ItemAccess(String userApiKey, String item_id) {
         this.userApiKey = userApiKey;
+        this.url += item_id;
     }
-    public void getDomains(final VolleyResponseListener listener) {
+
+    public void getItem(final VolleyResponseListener listener) {
 
         // Request a string response from the provided URL.
-        StringRequest getDomainsRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest getItemRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         //Log.d("DEBUG", response);
 
-                        JSONObject json_response = null;
+                        JSONObject item_response = null;
                         try {
-                            json_response = new JSONObject(response);
-                            //IdUser = person.getLong("id");
-                            boolean isError = json_response.getBoolean("error");
+                            item_response = new JSONObject(response);
 
-                            if(!isError) {
-                                JSONArray domains = json_response.getJSONArray("domains");
-
-                                Domain domain = null;
-                                for (int i = 0; i < domains.length(); i++) {
-                                    domain = new Domain();
-                                    domain.setName(domains.getJSONObject(i).getString("Name"));
-                                    domain_list.add(domain);
-                                }
-
-                            }
+                            item.setId(item_response.getLong("IdItem"));
+                            item.setName(item_response.getString("Name"));
+                            item.setDescription(item_response.getString("Description"));
+                            item.setBarcodeURL(item_response.getString("Barcode"));
+                            item.setQRcodeURL(item_response.getString("QRcode"));
+                            item.setImageURL(item_response.getString("Image"));
+                            item.setQR(item_response.getBoolean("IsQR"));
 
                             //byte[] decodedString = Base64.decode(json_response.getString("image"), Base64.DEFAULT);
                             //Bitmap bitmap_decoded = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                             //user.setImage(bitmap_decoded);
 
-                            listener.onResponse(domain_list);
+                            listener.onResponse(item);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -102,6 +99,6 @@ public class DomainAccess {
         //MainActivity.getInstance().getRequestQueue().add(stringRequest);
 
         // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(getDomainsRequest);
+        AppController.getInstance().addToRequestQueue(getItemRequest);
     }
 }

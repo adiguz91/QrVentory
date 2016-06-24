@@ -11,13 +11,18 @@ import java.util.List;
 public class Domain {
 
     private long IdDomain;
+    private long IdRootCategory;
     private String Name;
     private String Description;
     private Bitmap Image;
     private List<Category> categorys = new ArrayList();
 
-    public Domain() {
+    public long getIdRootCategory() {
+        return IdRootCategory;
+    }
 
+    public void setIdRootCategory(long idRootCategory) {
+        IdRootCategory = idRootCategory;
     }
 
     public long getIdDomain() {
