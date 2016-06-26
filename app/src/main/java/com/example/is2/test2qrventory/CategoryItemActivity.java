@@ -1,18 +1,15 @@
 package com.example.is2.test2qrventory;
 
 import android.app.ProgressDialog;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.is2.test2qrventory.connection.CategoryAccess;
-import com.example.is2.test2qrventory.connection.DomainAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Category;
 import com.example.is2.test2qrventory.model.Domain;
@@ -26,28 +23,19 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
 
     private ProgressDialog pDialog;
     private Category category = new Category();
-    private List<Category> categories = new ArrayList<>();
+    private List<Object> categories_items = new ArrayList<>();
     private ListView listView;
     private CustomCategoryListAdapter adapter;
     private int domain_index;
     private User user;
+    private List<Integer> moveList = new ArrayList<>();
+    //private int actual_category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_item);
-/*
-        // my_child_toolbar is defined in the layout file
-        Toolbar myChildToolbar =
-                (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(myChildToolbar);
 
-        // Get a support ActionBar corresponding to this toolbar
-        ActionBar ab = getSupportActionBar();
-
-        // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
-*/
         // If your minSdkVersion is below 11 use:
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // If your minSdkVersion is 11 or higher use:
@@ -87,7 +75,7 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
 
     private void initListView() {
         listView = (ListView) findViewById(R.id.list_category);
-        adapter = new CustomCategoryListAdapter(this, categories); // category.getSubcategories()
+        adapter = new CustomCategoryListAdapter(this, categories_items); // category.getSubcategories()
         listView.setAdapter(adapter);
 
         pDialog = new ProgressDialog(this);
@@ -95,11 +83,64 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
         pDialog.setMessage("Loading...");
         pDialog.show();
 
+        int category_root_id = 1;
+        moveList.add(category_root_id);
+
         String userApiKey = user.getApiKey();
         CategoryAccess categoryAccess = new CategoryAccess(userApiKey);
         categoryAccess.getRootCategory(this, 1, 1);
                 //user.getDomains().get(domain_index).getIdDomain(),
                 //user.getDomains().get(domain_index).getIdRootCategory());
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
+
+                Object category_item =  adapter.getItemAtPosition(position);
+
+                if(category_item.getClass() == Category.class) {
+                    Category category = (Category) category_item;
+                    moveList.add((int) category.getId());
+                    onCategoryClick(category);
+                } else {
+                    //Intent intent = new Intent(getBaseContext(), CategoryItemActivity.class);
+                    //based on item add info to intent
+                    //intent.putExtra("user", user);
+                    //intent.putExtra("domain_id", item.getIdDomain());
+                    //startActivity(intent);
+                }
+            }
+
+
+        });
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //switch (item.getItemId()) {
+        //    case android.R.id.home:
+                //setResult(RESULT_CANCELED);
+                //finish();
+                //return true;
+        //}
+
+        if(moveList.size() < 2) {
+            return super.onOptionsItemSelected(item);
+        } else {
+            String userApiKey = user.getApiKey();
+            CategoryAccess categoryAccess = new CategoryAccess(userApiKey);
+            categoryAccess.getRootCategory(this, 1,moveList.get(moveList.size() - 2));
+            moveList.remove(moveList.size()-1);
+            return true;
+        }
+    }
+
+    private void onCategoryClick(Category category) {
+        String userApiKey = user.getApiKey();
+        CategoryAccess categoryAccess = new CategoryAccess(userApiKey);
+        categoryAccess.getRootCategory(this, 1, category.getId());
     }
 
     @Override
@@ -108,7 +149,10 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
         hidePDialog();
 
         category = (Category) response;
-        categories.addAll(category.getSubcategories());
+
+        categories_items.clear();
+        categories_items.addAll(category.getSubcategories());
+        categories_items.addAll(category.getItems());
 
         // notifying list adapter about data changes
         // so that it renders the list view with updated data

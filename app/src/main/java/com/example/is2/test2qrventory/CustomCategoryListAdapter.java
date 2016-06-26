@@ -14,26 +14,27 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.example.is2.test2qrventory.controller.AppController;
 import com.example.is2.test2qrventory.model.Category;
+import com.example.is2.test2qrventory.model.Item;
 
 public class CustomCategoryListAdapter extends BaseAdapter {
 	private AppCompatActivity activity;
 	private LayoutInflater inflater;
-	private List<Category> categories;
+	private List<Object> categories_items;
 	ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-	public CustomCategoryListAdapter(AppCompatActivity activity, List<Category> categories) {
+	public CustomCategoryListAdapter(AppCompatActivity activity, List<Object> categories_items) {
 		this.activity = activity;
-		this.categories = categories;
+		this.categories_items = categories_items;
 	}
 
 	@Override
 	public int getCount() {
-		return categories.size();
+		return categories_items.size();
 	}
 
 	@Override
 	public Object getItem(int location) {
-		return categories.get(location);
+		return categories_items.get(location);
 	}
 
 	@Override
@@ -60,28 +61,34 @@ public class CustomCategoryListAdapter extends BaseAdapter {
 		//TextView year = (TextView) convertView.findViewById(R.id.releaseYear);
 
 		// getting movie data for the row
-		Category c = categories.get(position);
+		Category category = null;
+		Item item = null;
+		if(categories_items.get(position).getClass() == Category.class) {
+			category = (Category) categories_items.get(position);
 
-		// thumbnail image
-		//thumbNail.setImageUrl(d.getThumbnailUrl(), imageLoader);
+			// thumbnail image
+			//thumbNail.setImageUrl(d.getThumbnailUrl(), imageLoader);
 
-		// title
-		title.setText(c.getName());
+			// title
+			title.setText(category.getName());
 
-		// rating
-		rating.setText("Beschreibung: " + String.valueOf(c.getDescription()));
+			// rating
+			rating.setText("Beschreibung: " + String.valueOf(category.getDescription()));
 
-		// genre
-        /*String genreStr = "";
-        for (String str : d.getGenre()) {
-            genreStr += str + ", ";
-        }
-        genreStr = genreStr.length() > 0 ? genreStr.substring(0,
-                genreStr.length() - 2) : genreStr;
-        genre.setText(genreStr);*/
+		} else {
+			item = (Item) categories_items.get(position);
 
-		// release year
-		//year.setText(String.valueOf(m.getYear()));
+			// thumbnail image
+			//thumbNail.setImageUrl(d.getThumbnailUrl(), imageLoader);
+
+			// title
+			title.setText(item.getName());
+
+			// rating
+			rating.setText("Beschreibung: " + String.valueOf(item.getDescription()));
+
+		}
+
 
 		return convertView;
 	}
