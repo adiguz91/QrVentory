@@ -1,10 +1,16 @@
 package com.example.is2.test2qrventory;
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,8 +28,10 @@ import com.example.is2.test2qrventory.connection.DomainAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Domain;
 import com.example.is2.test2qrventory.model.User;
+import com.example.is2.test2qrventory.notification.NotificationReceiver;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -40,6 +48,9 @@ public class MainActivity extends AppCompatActivity
     private CustomListAdapter adapter;
 
     private User user = null;
+
+    private PendingIntent pendingIntent;
+    private AlarmManager alarmManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +84,64 @@ public class MainActivity extends AppCompatActivity
         //activity_instance = this;
 
         initListView();
+
+        /*NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(android.R.drawable.stat_sys_download)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World!");
+
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        // Because clicking the notification opens a new ("special") activity, there's
+        // no need to create an artificial back stack.
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        // Sets an ID for the notification
+        int mNotificationId = 001;
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());*/
+
+        //Calendar calendar = Calendar.getInstance();
+
+        /*calendar.set(Calendar.MONTH, 6);
+        calendar.set(Calendar.YEAR, 2013);
+        calendar.set(Calendar.DAY_OF_MONTH, 13);*/
+
+        /*calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 48);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.AM_PM,Calendar.PM);*/
+
+        Intent myIntent = new Intent(MainActivity.this, NotificationReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, myIntent,0);
+
+        // We want the alarm to go off 3 seconds from now.
+        //long firstTime = SystemClock.
+        //long firstTime = 3 * 1000;//start 3 seconds after first register.
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        //alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis() , pendingIntent);
+        long interval = 60 * 1000;
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+
+
     }
 
+    public void cancelAlarm(View view) {
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+            //Toast.makeText(this, "Alarm Canceled", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
 
