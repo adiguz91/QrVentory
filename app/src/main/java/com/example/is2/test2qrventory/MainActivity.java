@@ -25,8 +25,10 @@ import android.widget.ListView;
 
 import com.android.volley.RequestQueue;
 import com.example.is2.test2qrventory.connection.DomainAccess;
+import com.example.is2.test2qrventory.connection.EventAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Domain;
+import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.User;
 import com.example.is2.test2qrventory.notification.NotificationReceiver;
 
@@ -196,9 +198,15 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void nextActivity(Class class_name, Object object) {
+        Intent i = new Intent(getBaseContext(), class_name);
+        i.putExtra("user", (User) object);
+        startActivity(i);
+    }
+
     public void nextActivity(Class class_name) {
         Intent i = new Intent(getBaseContext(), class_name);
-        //i.putExtra("user", user);
+        //i.putExtra("user", (User) object);
         startActivity(i);
     }
 
@@ -211,7 +219,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-
+            nextActivity(EventActivity.class, user);
         } else if (id == R.id.nav_printer) {
             nextActivity(PrintActivity.class);
         } else if (id == R.id.nav_scanner) {
