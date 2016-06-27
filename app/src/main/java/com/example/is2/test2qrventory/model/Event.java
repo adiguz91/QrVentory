@@ -36,6 +36,8 @@ public class Event implements Parcelable {
         dest.writeLong((EndDate != null) ? EndDate.getTime() : 0);
         dest.writeString(Description);
         dest.writeString(ImageURL);
+        dest.writeInt(Status);
+        dest.writeByte((byte) (AutoStart ? 1 : 0)); //if myBoolean == true, byte == 1
     }
 
     /**
@@ -50,6 +52,8 @@ public class Event implements Parcelable {
         this.EndDate = new Date(in.readLong());
         this.Description = in.readString();
         this.ImageURL = in.readString();
+        this.Status = in.readInt();
+        this.AutoStart = in.readByte() != 0; //myBoolean == true if byte != 0
     }
 
     public static final Parcelable.Creator<Event> CREATOR = new Parcelable.Creator<Event>() {
