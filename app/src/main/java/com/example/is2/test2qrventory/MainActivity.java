@@ -149,6 +149,8 @@ public class MainActivity extends AppCompatActivity
             nextActivity(PrintActivity.class);
         } else if (id == R.id.nav_scanner) {
             nextActivity(ScanActivity.class);
+        } else if (id == R.id.nav_settings) {
+            nextActivity(SettingsActivity.class);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {

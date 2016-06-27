@@ -16,11 +16,13 @@
         android:focusableInTouchMode="true"
         android:weightSum="1">
     <!-- tools:context="com.example.is2.test2qrventory.printer.PrintActivity" -->
-        <Button
-            android:id="@+id/button_discover_printer"
-            android:layout_width="match_parent"
+
+        <TextView
+            android:id="@+id/discover_printer_text_view"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:background="@drawable/border"
             android:text="@string/button_search_no" />
 
         <Button
@@ -28,6 +30,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
             android:text="@string/button_select_xml_no" />
 
         <LinearLayout

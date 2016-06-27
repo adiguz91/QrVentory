@@ -29,6 +29,7 @@ public class SampleDataProvider implements LWPrintDataProvider {
     private String qrCodeData = "QRCode";
     private String barcodeData = "Barcode";
     private String formName;
+    private String barcodeType;
 
     InputStream formDataStringInputStream;
     InputStream formDataQRCodeInputStream;
@@ -36,6 +37,10 @@ public class SampleDataProvider implements LWPrintDataProvider {
 
     List<Object> _formData = null;
     List<ContentsData> _contentsData = null;
+
+    public String getBarcodeType() { return barcodeType; }
+
+    public void setBarcodeType(String barcodeType) { this.barcodeType = barcodeType; }
 
     public String getFormName() {
         return formName;
@@ -106,20 +111,20 @@ public class SampleDataProvider implements LWPrintDataProvider {
         Logger.d("startOfPrint");
 
         if ("Barcode.plist".equals(formName)) {
-            AssetManager as = context.getResources().getAssets();
+            //AssetManager as = context.getResources().getAssets();
 
             // Contents data
-            String contentsFileName = LWPrintSampleUtil.getPreffix(formName)
-                    + KEY_PREFFIX + "." + LWPrintSampleUtil.getSuffix(formName);
+            /*String contentsFileName = LWPrintSampleUtil.getPreffix(formName)
+                    //+ KEY_PREFFIX + "." + LWPrintSampleUtil.getSuffix(formName);
             LWPrintContentsXmlParser xmlParser = new LWPrintContentsXmlParser();
-            InputStream in = null;
+            InputStream in = null;*/
             try {
-                in = as.open(contentsFileName);
-                //_contentsData = xmlParser.parse(in, "UTF-8");
+                /*in = as.open(contentsFileName);
+                _contentsData = xmlParser.parse(in, "UTF-8"); */
 
                 HashMap<String, String> elementMap = new HashMap<String, String>();
-                String keyName = "Code-EAN8";
-                String keyValue = "1234567";
+                String keyName = getBarcodeType();
+                String keyValue = "1234567"; //here comes the database ID instead
                 elementMap.put(keyName, keyValue);
                 ContentsData objData = new ContentsData();
                 objData.setElementMap(elementMap);
@@ -129,7 +134,7 @@ public class SampleDataProvider implements LWPrintDataProvider {
 
             } catch (Exception e) {
                 Logger.e(TAG, e.toString(), e);
-            } finally {
+            } /*finally {
                 if (in != null) {
                     try {
                         in.close();
@@ -137,7 +142,7 @@ public class SampleDataProvider implements LWPrintDataProvider {
                     }
                     in = null;
                 }
-            }
+            }*/
         }
     }
 

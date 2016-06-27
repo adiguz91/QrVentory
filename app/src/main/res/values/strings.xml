@@ -20,8 +20,8 @@
         completions."
     </string>
 
-    <string name="button_search_no">Select: Device is not selected</string>
-    <string name="button_search">"Select: "</string>
+    <string name="button_search_no">Status: Device is not selected</string>
+    <string name="button_search">"Device selected: "</string>
 
     <string name="edittext_input_data"></string>
 
@@ -34,10 +34,33 @@
 
     <string name="title_discover_printer">Discover Printer</string>
 
-    <string name="button_select_xml_no">Select: Form data is not selected</string>
-    <string name="function_name_select_xml">Form Data</string>
+    <string name="button_select_xml_no">Select: Form type is not selected</string>
+    <string name="function_name_select_xml">Form Type</string>
+    <string name="function_name_choose_barcode_type">Choose barcode type</string>
     <string name="button_select_xml_all">All</string>
+    <string name="button_choose_barcode_type_ok">Done</string>
     <string name="button_select_xml_ok">Done</string>
     <string name="text_result">N/A</string>
     <string name="text_view_printing_page">N/A</string>
+
+    <!-- PrintSettings -->
+    <string name="text_print_settings_title">Print Settings</string>
+    <string name="text_copies_setting">Copies:</string>
+    <string name="text_tape_cut_setting">Tape Cut:</string>
+    <string name="text_half_cut_setting">Half Cut:</string>
+    <string name="text_low_speed_setting">Low Speed:</string>
+    <string name="text_density_setting">Density:</string>
+    <string name="text_sdk_version_setting">SDK Version:</string>
+    <string name="text_description_print_settings_ok_button">Done</string>
+    <string name="button_print_settings_ok">Done</string>
+    <string name="toggle_text_on">ON</string>
+    <string name="toggle_text_off">OFF</string>
+    <string name="radio_each">Each</string>
+    <string name="radio_after">After</string>
+    <string name="radio_none">None</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="function_name_setting_type">Settings</string>
+    <string name="text_view_printer_connection">Device connected: None </string>
+
 </resources>

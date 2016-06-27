@@ -1,5 +1,9 @@
 package com.example.is2.test2qrventory;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -11,11 +15,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.epson.lwprint.sdk.LWPrint;
 import com.epson.lwprint.sdk.LWPrintDiscoverPrinter;
 import com.epson.lwprint.sdk.LWPrintDiscoverPrinterCallback;
+import com.epson.lwprint.sdk.LWPrintStatusError;
 import com.example.is2.test2qrventory.printer.DeviceInfo;
+import com.example.is2.test2qrventory.printer.PrinterStatus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +41,12 @@ public class SearchActivity extends Activity {
 	List<String> dataList = new ArrayList<String>();
 	List<DeviceInfo> deviceList = new ArrayList<DeviceInfo>();
 	ArrayAdapter<String> adapter;
+
+	Map<String, String> printerInfo = null;
+	private ProgressDialog waitDialog;
+	LWPrint lwprint;
+	Map<String, Integer> lwStatus = null;
+	Boolean connectionFound = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,8 +109,62 @@ public class SearchActivity extends Activity {
 
 		// Sets the callback
 		lpPrintDiscoverPrinter.setCallback(listener = new ServiceCallback());
-		// Starts discovery
+
+		// ProgressDialog
+		waitDialog = new ProgressDialog(this);
+		waitDialog.setMessage("Search for printers...");
+		waitDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		waitDialog.setCancelable(false);
+
+		lwprint = new LWPrint(this);
+
+		getTemporaryPrinterInfo();
+		if (printerInfo != null) {
+			waitDialog.show();
+
+			new AsyncTask<Object, Object, PrinterStatus>() {
+				@Override
+				protected PrinterStatus doInBackground(Object... params) {
+					lwprint.setPrinterInformation(printerInfo);
+					lwStatus = lwprint.fetchPrinterStatus();
+					PrinterStatus status = new PrinterStatus();
+					status.setDeviceError(lwprint
+							.getDeviceErrorFromStatus(lwStatus));
+					return status;
+				}
+
+				@Override
+				protected void onPostExecute(PrinterStatus status) {
+					//notifyPrinterStatus(status.getDeviceError());
+
+					if (status.getDeviceError() == LWPrintStatusError.ConnectionFailed || lwStatus.isEmpty()) {
+						connectionFound = false;
+						String message = "Connection failed. Turn on label printer.";
+						alertAbortOperation("Error", message);
+					} else {
+						connectionFound = true;
+					}
+					waitDialog.dismiss();
+				}
+			}.execute();
+		}
+
 		lpPrintDiscoverPrinter.startDiscover(this);
+	}
+
+	private void getTemporaryPrinterInfo() {
+		printerInfo = new HashMap<String, String>();
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_NAME, "LW-600P");
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_PRODUCT, "LW-600P");
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_USBMDL, "LW-600P");
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_HOST, "");
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_PORT, "");
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_TYPE, "_pdl-datastream._bluetooth.");
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_DOMAIN, "local.");
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_SERIAL_NUMBER, "E4:7F:B2:6A:36:39");
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_DEVICE_CLASS, "PRINTER");
+		printerInfo.put(LWPrintDiscoverPrinter.PRINTER_INFO_DEVICE_STATUS, "");
+
 	}
 
 	class ServiceCallback implements LWPrintDiscoverPrinterCallback {
@@ -221,10 +289,12 @@ public class SearchActivity extends Activity {
 	private void notifyAdd(final String name) {
 		handler.postDelayed(new Runnable() {
 			public void run() {
-				dataList.add(name);
-				adapter.notifyDataSetChanged();
+				if (connectionFound) {
+					dataList.add(name);
+					adapter.notifyDataSetChanged();
+				}
 			}
-		}, 1);
+		}, 4000);
 	}
 
 	private void notifyUpdate(final int index, final String name) {
@@ -253,6 +323,28 @@ public class SearchActivity extends Activity {
 			lpPrintDiscoverPrinter = null;
 		}
 		super.onDestroy();
+	}
+
+	public void alertAbortOperation(final String title, final String message) {
+		handler.postDelayed(new Runnable() {
+			public void run() {
+				AlertDialog.Builder alert = new AlertDialog.Builder(
+						SearchActivity.this);
+				alert.setTitle(title);
+				alert.setMessage(message);
+				alert.setPositiveButton("OK",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+												int which) {
+								lwprint.cancelPrint();
+							}
+						});
+				AlertDialog alertDialog = alert.create();
+				alertDialog.setCanceledOnTouchOutside(false);
+				alertDialog.show();
+			}
+		}, 1);
 	}
 
 }

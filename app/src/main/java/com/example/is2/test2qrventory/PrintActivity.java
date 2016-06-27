@@ -1,5 +1,7 @@
 package com.example.is2.test2qrventory;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -53,6 +55,7 @@ import com.epson.lwprint.sdk.LWPrintPrintingPhase;
 import com.epson.lwprint.sdk.LWPrintCallback;
 import com.example.is2.test2qrventory.printer.LWPrintSampleUtil;
 import com.example.is2.test2qrventory.printer.Logger;
+import com.example.is2.test2qrventory.printer.PrinterStatus;
 import com.example.is2.test2qrventory.printer.SampleDataProvider;
 
 
@@ -72,6 +75,8 @@ public class PrintActivity extends Activity implements OnClickListener {
 	private static final int REQUEST_ACTIVITY_SEARCH = 1;
 	private static final int REQUEST_ACTIVITY_SELECT_XML = 2; //new
 
+	private static final int REQUEST_ACTIVITY_CHOOSE_BARCODE_TYPE = 3;
+
 	private static final String KEY_FORMDATA = "formdata"; //new
 	private static final String SUFFIX = ".plist"; //new
 
@@ -80,29 +85,26 @@ public class PrintActivity extends Activity implements OnClickListener {
 
 	SampleDataProvider sampleDataProvider;
 
-	private ArrayList<String> _formNames = null; //new
-	private Button buttonSelectXml; //new
-	private Button buttonDiscoverPrinter;
-	private EditText editTextInputData;
-	//private RadioGroup radioGroupMode;
-	//private RadioButton radioButtonText;
-	/*private RadioButton radioButtonQRCode;
-	private RadioButton radioButtonBARCode;*/
+	private ArrayList<String> _formNames = null;
+	private Button buttonSelectXml;
+	//private Button buttonDiscoverPrinter;
 	private Button buttonPrint;
+	private EditText editTextInputData;
 	private TextView textResult;
 	private TextView textPrintingPage;
+	private TextView textDiscoverPrinter;
 	private CheckBox checkBoxText;
 
 	private boolean processing = false;
-	private ProgressDialog progressDialog; //new
-	private ProgressDialog waitDialog; //new
-	private int _jobNumber = 0; //new
-	Timer timer; //new
+	private ProgressDialog progressDialog;
+	private ProgressDialog waitDialog;
+	private int _jobNumber = 0;
+	Timer timer;
 
 	Boolean printTextOnly = false;
 
 	Map<String, String> printerInfo = null;
-	//Map<String, Object> _printSettings = null;
+	Map<String, Object> printSettings = null;
 	Map<String, Integer> lwStatus = null;
 
 	android.os.Handler handler = new android.os.Handler();
@@ -135,7 +137,6 @@ public class PrintActivity extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}*/
 
-
 		// --------------------------------------------------------------------
 
 		// Keep screen on
@@ -150,8 +151,17 @@ public class PrintActivity extends Activity implements OnClickListener {
 		buttonSelectXml = (Button) findViewById(R.id.select_xml_button); //new
 		buttonSelectXml.setOnClickListener(this); //new
 
-		buttonDiscoverPrinter = (Button) findViewById(R.id.button_discover_printer);
-		buttonDiscoverPrinter.setOnClickListener(this);
+		textDiscoverPrinter = (TextView) findViewById(R.id.discover_printer_text_view);
+		if (SettingsActivity.getInstance() != null) {
+			printerInfo = SettingsActivity.getInstance().getPrinterInfo();
+			if (printerInfo != null) {
+				//textDiscoverPrinter = (TextView) findViewById(R.id.discover_printer_text_view);
+				textDiscoverPrinter.setText(getResources().getString(
+						R.string.button_search)
+						+ printerInfo.get("name"));
+				//buttonDiscoverPrinter.setOnClickListener(this);
+			}
+		}
 
 		editTextInputData = (EditText) findViewById(R.id.edittext_input_data);
 		//editTextInputData.setEnabled(false);
@@ -182,9 +192,6 @@ public class PrintActivity extends Activity implements OnClickListener {
 		waitDialog.setMessage("Now processing...");
 		waitDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		waitDialog.setCancelable(false);
-
-		// Print Settings
-		//setPrintSettingsValues();
 
 		// Form Data
 		if (LWPrintSampleUtil.SAVE_VALUES_MODE) {
@@ -240,6 +247,32 @@ public class PrintActivity extends Activity implements OnClickListener {
 			}
 		});
 
+		/*if (SettingsActivity.getInstance() != null) {
+			printerInfo = SettingsActivity.getInstance().getPrinterInfo();
+			if (printerInfo != null) {
+				waitDialog.show();
+
+				new AsyncTask<Object, Object, PrinterStatus>() {
+					@Override
+					protected PrinterStatus doInBackground(Object... params) {
+						lwprint.setPrinterInformation(printerInfo);
+						lwStatus = lwprint.fetchPrinterStatus();
+						PrinterStatus status = new PrinterStatus();
+						status.setDeviceError(lwprint
+								.getDeviceErrorFromStatus(lwStatus));
+						return status;
+					}
+
+					@Override
+					protected void onPostExecute(PrinterStatus status) {
+						notifyPrinterStatus(status.getDeviceError());
+						processing = false;
+						waitDialog.dismiss();
+					}
+				}.execute();
+			}
+		}*/
+
 	}
 
 	/**
@@ -277,31 +310,6 @@ public class PrintActivity extends Activity implements OnClickListener {
 			inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		}
 	}
-
-	/*private void setPrintSettingsValues() {
-		int copies = LWPrintSampleUtil.DEFAULT_COPIES_SETTING;
-		int tapeCut = LWPrintSampleUtil.DEFAULT_TAPE_CUT_SETTING;
-		boolean halfCut = LWPrintSampleUtil.DEFAULT_HALF_CUT_SETTING;
-		boolean printSpeed = LWPrintSampleUtil.DEFAULT_LOW_SPEED_SETTING;
-		int density = LWPrintSampleUtil.DEFAULT_DENSITY_SETTING;
-
-		_printSettings = new HashMap<String, Object>();
-		_printSettings.put(LWPrintParameterKey.Copies, copies);
-		_printSettings.put(LWPrintParameterKey.TapeCut, tapeCut);
-		_printSettings.put(LWPrintParameterKey.HalfCut, halfCut);
-		_printSettings.put(LWPrintParameterKey.PrintSpeed, printSpeed);
-		_printSettings.put(LWPrintParameterKey.Density, density);
-
-		SharedPreferences pref = getSharedPreferences(
-				LWPrintSampleUtil.PREFERENCE_FILE_NAME, MODE_PRIVATE);
-		SharedPreferences.Editor editor = pref.edit();
-		editor.putInt(LWPrintParameterKey.Copies, copies);
-		editor.putInt(LWPrintParameterKey.TapeCut, tapeCut);
-		editor.putBoolean(LWPrintParameterKey.HalfCut, halfCut);
-		editor.putBoolean(LWPrintParameterKey.PrintSpeed, printSpeed);
-		editor.putInt(LWPrintParameterKey.Density, density);
-		editor.commit();
-	}*/
 
 	private void createProgressDialogForPrinting() {
 		if (progressDialog == null) {
@@ -342,10 +350,10 @@ public class PrintActivity extends Activity implements OnClickListener {
 		hideKeyboard();
 
 		switch (v.getId()) {
-		case R.id.button_discover_printer:
+		/*case R.id.button_discover_printer:
 			intent = new Intent(this, com.example.is2.test2qrventory.SearchActivity.class);
 			startActivityForResult(intent, REQUEST_ACTIVITY_SEARCH);
-			break;
+			break;*/
 		case R.id.select_xml_button:
 			intent = new Intent(this, SelectXmlActivity.class);
 			if (_formNames != null) {
@@ -354,6 +362,9 @@ public class PrintActivity extends Activity implements OnClickListener {
 			startActivityForResult(intent, REQUEST_ACTIVITY_SELECT_XML);
 		break;
 		case R.id.button_print:
+			if (SettingsActivity.getInstance() != null) {
+				printerInfo = SettingsActivity.getInstance().getPrinterInfo();
+			}
 			if (printerInfo == null) {
 				Toast.makeText(getApplicationContext(),
 						"Device is not selected.", Toast.LENGTH_SHORT).show();
@@ -373,16 +384,19 @@ public class PrintActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	/*private void notifyPrinterStatus(final int deviceError, final int tape) {
+	/*private void notifyPrinterStatus(final int deviceError) {
 		handler.postDelayed(new Runnable() {
 			public void run() {
-				textPrinterStatus.setText(Integer.toHexString(deviceError));
-				textTapeLabel.setText(getTapeWidthStringFromTapeWidhCode(tape));
+				//textPrinterStatus.setText(Integer.toHexString(deviceError));
+				//textTapeLabel.setText(getTapeWidthStringFromTapeWidhCode(tape));
+				if (lwStatus.isEmpty() || (deviceError == LWPrintStatusError.ConnectionFailed)) {
+					textDiscoverPrinter.setText("Status: Device is not selected");
+				}
 			}
 		}, 1);
-	}
+	}*/
 
-	private String getTapeWidthStringFromTapeWidhCode(int tapeWidth) {
+	/*private String getTapeWidthStringFromTapeWidhCode(int tapeWidth) {
 		Map<Integer, String> tapeStrings = new HashMap<Integer, String>();
 		tapeStrings.put(LWPrintTapeWidth.None, "None");
 		tapeStrings.put(LWPrintTapeWidth.Normal_4mm, "4mm");
@@ -395,9 +409,9 @@ public class PrintActivity extends Activity implements OnClickListener {
 		tapeStrings.put(LWPrintTapeWidth.Unknown, "Unknown");
 
 		return tapeStrings.get(tapeWidth);
-	}
+	}*/
 
-	*/
+
 
 	public boolean isProcessing() {
 		return processing;
@@ -408,7 +422,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 
 		handler.postDelayed(new Runnable() {
 			public void run() {
-				buttonDiscoverPrinter.setEnabled(!mode);
+				//buttonDiscoverPrinter.setEnabled(!mode);
 				buttonSelectXml.setEnabled(!mode);
 				editTextInputData.setEnabled(!mode);
 				buttonPrint.setEnabled(!mode);
@@ -452,17 +466,28 @@ public class PrintActivity extends Activity implements OnClickListener {
 
 		new AsyncTask<Object, Object, Boolean>() {
 
-			//int id = radioGroupMode.getCheckedRadioButtonId();
-
 			@Override
 			protected Boolean doInBackground(Object... params) {
 				// Set printing information
 				lwprint.setPrinterInformation(printerInfo);
 
-				// Obtain printing status
+				/*// Obtain printing status
 				lwStatus = lwprint.fetchPrinterStatus();
 				int deviceError = lwprint.getDeviceErrorFromStatus(lwStatus);
 				if (lwStatus.isEmpty() || (deviceError == LWPrintStatusError.ConnectionFailed)) {
+					return false;
+				}*/
+
+				/*if (lwStatus == null) {
+					lwStatus = lwprint.fetchPrinterStatus();
+				}*/
+				lwStatus = lwprint.fetchPrinterStatus();
+				int deviceError = lwprint.getDeviceErrorFromStatus(lwStatus);
+				//notifyPrinterStatus(deviceError);
+				if (lwStatus.isEmpty() || (deviceError == LWPrintStatusError.ConnectionFailed)) {
+					if (progressDialog != null) {
+						progressDialog.dismiss();
+					}
 					return false;
 				}
 
@@ -482,26 +507,30 @@ public class PrintActivity extends Activity implements OnClickListener {
 
 				//notifyPrinterStatus(deviceError, tapeWidth);
 
-				Map<String, Object> printParameter = new HashMap<String, Object>();
-				// Number of copies(1 ... 99)
-				printParameter.put(LWPrintParameterKey.Copies, 1);
-				// Tape cut method(LWPrintTapeCut)
-				Object put = printParameter.put(LWPrintParameterKey.TapeCut,
-						LWPrintTapeCut.EachLabel);
-				// Set half cut (true:half cut on)
-				printParameter.put(LWPrintParameterKey.HalfCut,
-						true);
-				// Low speed print setting (true:low speed print on)
-				printParameter.put(LWPrintParameterKey.PrintSpeed,
-						false);
-				// Print density(-5 ... 5)
-				printParameter.put(LWPrintParameterKey.Density,
-						0);
-				// Tape width(LWPrintTapeWidth)
-				printParameter.put(LWPrintParameterKey.TapeWidth, tapeWidth);
+				if (SettingsActivity.getInstance() != null) {
+					printSettings = SettingsActivity.getInstance().getPrintSettings();
+				} else {
+					printSettings = new HashMap<String, Object>();
+					// Number of copies(1 ... 99)
+					printSettings.put(LWPrintParameterKey.Copies, 1);
+					// Tape cut method(LWPrintTapeCut)
+					Object put = printSettings.put(LWPrintParameterKey.TapeCut,
+							LWPrintTapeCut.EachLabel);
+					// Set half cut (true:half cut on)
+					printSettings.put(LWPrintParameterKey.HalfCut,
+							true);
+					// Low speed print setting (true:low speed print on)
+					printSettings.put(LWPrintParameterKey.PrintSpeed,
+							false);
+					// Print density(-5 ... 5)
+					printSettings.put(LWPrintParameterKey.Density,
+							0);
+					// Tape width(LWPrintTapeWidth)
+					printSettings.put(LWPrintParameterKey.TapeWidth, tapeWidth);
+				}
 
 				// Carry out printing
-				lwprint.doPrint(sampleDataProvider, printParameter);
+				lwprint.doPrint(sampleDataProvider, printSettings);
 
 				return true;
 			}
@@ -511,7 +540,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 				if (result == false) {
 					setProcessing(false);
 
-					String message = "Can't get printer status.";
+					String message = "Connection failed. Turn on label printer.";
 					alertAbortOperation("Error", message);
 				}
 			}
@@ -592,7 +621,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 						"Bluetooth is not enabled.", Toast.LENGTH_SHORT).show();
 			}
 			break;
-		case REQUEST_ACTIVITY_SEARCH:
+		/*case REQUEST_ACTIVITY_SEARCH:
 			if (resultCode == RESULT_OK) {
 				Bundle extras = data.getExtras();
 				if (extras != null) {
@@ -636,7 +665,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 							+ extras.getString("name"));
 				}
 			}
-			break;
+			break;*/
 		case REQUEST_ACTIVITY_SELECT_XML:
 			if (resultCode == RESULT_OK) {
 				Bundle extras = data.getExtras();
@@ -648,6 +677,21 @@ public class PrintActivity extends Activity implements OnClickListener {
 							+ _formNames.get(_jobNumber)
 							+ "] "
 							+ (_jobNumber + 1) + " / " + _formNames.size());
+
+					if ("Barcode".equals(name)) {
+						Intent intent = null;
+						intent = new Intent(this, ChooseBarcodeTypeActivity.class);
+						startActivityForResult(intent, REQUEST_ACTIVITY_CHOOSE_BARCODE_TYPE);
+					}
+				}
+			}
+			break;
+		case REQUEST_ACTIVITY_CHOOSE_BARCODE_TYPE:
+			if (resultCode == RESULT_OK) {
+				Bundle extras = data.getExtras();
+				if (extras != null) {
+					String barcode_type = extras.getString("Barcode Type");
+					sampleDataProvider.setBarcodeType(barcode_type);
 				}
 			}
 			break;
