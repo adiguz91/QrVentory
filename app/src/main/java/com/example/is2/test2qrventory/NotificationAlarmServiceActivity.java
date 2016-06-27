@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 
 import com.example.is2.test2qrventory.MainActivity;
 import com.example.is2.test2qrventory.model.Event;
@@ -124,17 +125,32 @@ public class NotificationAlarmServiceActivity extends Service {
             int eid = (int) currentEvent.getId();
 
             Period period = printDifference(currentEvent.getStartDate(), currentEvent.getEndDate());
+
             StringBuilder sb = new StringBuilder();
-            sb.append(period.getDays());
-            sb.append(period.getHours());
-            sb.append(period.getMinutes());
-            sb.append(period.getMillis());
+            if (period.getDays() != 0) {
+                sb.append("Days: " + period.getDays() + " ");
+            }
+            sb.append("Hours: " + period.getHours() + " ");
+            if (period.getDays() == 0) {
+                sb.append("Minutes: " + period.getMinutes() + " ");
+            }
+            sb.append("Time Left."); //or too much
             String timeDiff = sb.toString();
 
             Notification.Builder builder = new Notification.Builder(NotificationAlarmServiceActivity.this);
             builder.setSmallIcon(android.R.drawable.stat_sys_download) //android.R.drawable.stat_sys_download
-                    .setContentTitle(timeDiff + " " + currentEvent.getName() + " " + startDate + " " + endDate)
-                    .setContentIntent(pendingNotificationIntent);
+                    .setContentTitle(currentEvent.getName()) //timeDiff + "\n" + currentEvent.getName() + "\n" + startDate + "\n" + endDate
+                    .setContentIntent(pendingNotificationIntent)
+                    .setContentText(timeDiff);
+                    //.setStyle(new Notification.BigTextStyle().bigText(timeDiff));
+
+            /*NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+            inboxStyle.setBigContentTitle(currentEvent.getName());
+            inboxStyle.addLine(timeDiff);
+            inboxStyle.addLine(startDate);
+            inboxStyle.addLine((endDate));
+
+            builder.setStyle(inboxStyle);*/
 
             Notification notification = builder.getNotification();
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
