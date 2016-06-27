@@ -71,6 +71,24 @@ public class Event implements Parcelable {
     private Date StartDate;
     private Date EndDate;
     private String ImageURL;
+    private int Status; // 0=inaktive, 1=started, 2=finished
+    private boolean AutoStart;
+
+    public int getStatus() {
+        return Status;
+    }
+
+    public void setStatus(int status) {
+        Status = status;
+    }
+
+    public boolean isAutoStart() {
+        return AutoStart;
+    }
+
+    public void setAutoStart(boolean autoStart) {
+        AutoStart = autoStart;
+    }
 
     public long getId() {
         return Id;

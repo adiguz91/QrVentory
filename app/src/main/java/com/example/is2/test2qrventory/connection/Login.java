@@ -42,15 +42,15 @@ public class Login {
                         try {
                             person = new JSONObject(response);
                             //IdUser = person.getLong("id");
-                            user.setEmail(person.getString("email"));
-                            user.setApiKey(person.getString("api_key"));
-                            user.setFirstname(person.getString("firstname"));
-                            user.setLastname(person.getString("lastname"));
+                            user.setEmail(person.getString("Email"));
+                            user.setApiKey(person.getString("ApiKey"));
+                            user.setFirstname(person.getString("Firstname"));
+                            user.setLastname(person.getString("Lastname"));
+                            user.setImage(person.getString("Image"));
 
-                            byte[] decodedString = Base64.decode(person.getString("image"), Base64.DEFAULT);
-                            Bitmap bitmap_decoded = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
-                            user.setImage(bitmap_decoded);
+                            //byte[] decodedString = Base64.decode(person.getString("image"), Base64.DEFAULT);
+                            //Bitmap bitmap_decoded = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            //user.setImage(bitmap_decoded);
 
                             listener.onResponse(user);
 

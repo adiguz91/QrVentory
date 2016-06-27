@@ -30,7 +30,8 @@ public class User implements Parcelable {
         dest.writeString(Password);
         dest.writeString(Firstname);
         dest.writeString(Lastname);
-        dest.writeParcelable(Image, flags);
+        //dest.writeParcelable(Image, flags);
+        dest.writeString(ImageURL);
         dest.writeString(ApiKey);
         dest.writeList(Domains);
     }
@@ -46,7 +47,8 @@ public class User implements Parcelable {
         this.Password = in.readString();
         this.Firstname = in.readString();
         this.Lastname = in.readString();
-        this.Image = in.readParcelable(null);
+        //this.Image = in.readParcelable(null);
+        this.ImageURL = in.readString();
         this.ApiKey = in.readString();
         this.Domains = in.readArrayList(null);
     }
@@ -76,7 +78,7 @@ public class User implements Parcelable {
     private static String Password;
     private static String Firstname;
     private static String Lastname;
-    private static Bitmap Image;
+    private static String ImageURL;
     private static String ApiKey;
     private static List<Domain> Domains;
 
@@ -96,12 +98,12 @@ public class User implements Parcelable {
         Lastname = lastname;
     }
 
-    public static Bitmap getImage() {
-        return Image;
+    public static String getImage() {
+        return ImageURL;
     }
 
-    public static void setImage(Bitmap image) {
-        Image = image;
+    public static void setImage(String image) {
+        ImageURL = image;
     }
 
     public static String getApiKey() {
