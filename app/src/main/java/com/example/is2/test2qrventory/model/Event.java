@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.EventLogTags;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -137,4 +139,13 @@ public class Event implements Parcelable {
     public void setImageURL(String imageURL) {
         ImageURL = imageURL;
     }
+
+    public String DateToStringParser(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String dateTimeStr = dateFormat.format(date);
+
+        return dateTimeStr;
+    }
+
 }
