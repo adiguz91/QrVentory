@@ -1,16 +1,12 @@
 package com.example.is2.test2qrventory;
 
 import android.app.AlarmManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,15 +21,12 @@ import android.widget.ListView;
 
 import com.android.volley.RequestQueue;
 import com.example.is2.test2qrventory.connection.DomainAccess;
-import com.example.is2.test2qrventory.connection.EventAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Domain;
-import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.User;
 import com.example.is2.test2qrventory.notification.NotificationReceiver;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -219,7 +212,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-            nextActivity(EventActivity.class, user);
+            nextActivity(EventListActivity.class, user);
         } else if (id == R.id.nav_printer) {
             nextActivity(PrintActivity.class);
         } else if (id == R.id.nav_scanner) {

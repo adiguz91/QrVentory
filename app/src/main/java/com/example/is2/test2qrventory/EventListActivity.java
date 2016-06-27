@@ -19,7 +19,7 @@ import com.example.is2.test2qrventory.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventActivity extends AppCompatActivity implements VolleyResponseListener {
+public class EventListActivity extends AppCompatActivity implements VolleyResponseListener {
 
     private ListView listView;
     private CustomEventListAdapter adapter;
