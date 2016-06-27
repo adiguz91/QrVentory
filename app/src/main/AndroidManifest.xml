@@ -122,7 +122,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".CategoryItemActivity" />
         </activity>
-        <activity android:name=".EventActivity"></activity>
+        <!-- A child of the categoryitem activity -->
+        <activity android:name=".EventListActivity"
+            android:label="Event"
+            android:parentActivityName=".MainActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>

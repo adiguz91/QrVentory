@@ -101,4 +101,6 @@ public class ItemAccess {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(getItemRequest);
     }
+
+
 }
