@@ -88,7 +88,6 @@
             android:name=".CategoryItemActivity"
             android:label="Categories/Items"
             android:parentActivityName=".MainActivity">
-
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -106,6 +105,15 @@
             android:name=".SettingsActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+        <!-- A child of the categoryitem activity -->
+        <activity android:name=".ItemActivity"
+            android:label="Item"
+            android:parentActivityName=".CategoryItemActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CategoryItemActivity" />
+        </activity>
     </application>
 
 </manifest>

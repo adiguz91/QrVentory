@@ -58,7 +58,7 @@ public class ItemAccess {
                             item.setBarcodeURL(item_response.getString("Barcode"));
                             item.setQRcodeURL(item_response.getString("QRcode"));
                             item.setImageURL(item_response.getString("Image"));
-                            item.setQR(item_response.getBoolean("IsQR"));
+                            item.setIsQR((item_response.getInt("IsQR") == 1) ? true : false);
 
                             //byte[] decodedString = Base64.decode(json_response.getString("image"), Base64.DEFAULT);
                             //Bitmap bitmap_decoded = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);

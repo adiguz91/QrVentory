@@ -104,17 +104,23 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
                     moveList.add((int) category.getId());
                     onCategoryClick(category);
                 } else {
-                    //Intent intent = new Intent(getBaseContext(), CategoryItemActivity.class);
-                    //based on item add info to intent
-                    //intent.putExtra("user", user);
-                    //intent.putExtra("domain_id", item.getIdDomain());
-                    //startActivity(intent);
+                    nextActivity(ItemActivity.class, category_item);
                 }
             }
 
 
         });
+    }
 
+    private void nextActivity(Class activity_class, Object object) {
+        Intent intent = new Intent(getBaseContext(), ItemActivity.class);
+        //based on item add info to intent
+        intent.putExtra("user", user);
+
+        if(object.getClass() == Item.class)
+            intent.putExtra("item", (Item) object);
+
+        startActivity(intent);
     }
 
     @Override
