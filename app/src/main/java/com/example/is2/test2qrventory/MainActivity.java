@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity
         calendar.set(Calendar.AM_PM,Calendar.PM);*/
 
         Intent myIntent = new Intent(MainActivity.this, NotificationReceiver.class);
+        myIntent.putExtra("user", user);
         pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, myIntent,0);
 
         // We want the alarm to go off 3 seconds from now.

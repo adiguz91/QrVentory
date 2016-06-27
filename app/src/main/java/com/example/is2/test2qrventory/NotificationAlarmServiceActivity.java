@@ -10,7 +10,10 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 
 import com.example.is2.test2qrventory.MainActivity;
+import com.example.is2.test2qrventory.connection.EventAccess;
+import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Event;
+import com.example.is2.test2qrventory.model.User;
 import com.example.is2.test2qrventory.notification.NotificationReceiver;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -29,11 +32,13 @@ import java.util.List;
 /**
  * Created by Kevin on 27.06.2016.
  */
-public class NotificationAlarmServiceActivity extends Service {
+public class NotificationAlarmServiceActivity extends Service implements VolleyResponseListener {
     private NotificationManager mManager;
     Event event = null;
     Event event2 = null;
-    List<Event> events = null;
+    List<Event> events = new ArrayList<>();
+    User user = null;
+    PendingIntent pendingNotificationIntent = null;
 
     @Override
     public IBinder onBind(Intent arg0)
@@ -50,7 +55,9 @@ public class NotificationAlarmServiceActivity extends Service {
 
         JodaTimeAndroid.init(this);
 
-        events = new ArrayList<Event>();
+
+
+        /*events = new ArrayList<Event>();
         event = new Event();
 
         Calendar cal = Calendar.getInstance();
@@ -92,7 +99,7 @@ public class NotificationAlarmServiceActivity extends Service {
         event2.setName("Messeplatz2");
 
         events.add(event);
-        events.add(event2);
+        events.add(event2);*/
 
         /*Calendar c = Calendar.getInstance();
         System.out.println("Current time => " + c.getTime());
@@ -108,17 +115,25 @@ public class NotificationAlarmServiceActivity extends Service {
     {
         super.onStart(intent, startId);
 
+        user = intent.getParcelableExtra("user");
+        String test = user.getFirstname();
+
         mManager = (NotificationManager) this.getApplicationContext().getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
         Intent intent1 = new Intent(this.getApplicationContext(), MainActivity.class);
 
         //Notification notification = new Notification(R.drawable.ic_launcher,"This is a test message!", System.currentTimeMillis());
         intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent pendingNotificationIntent = PendingIntent.getActivity( this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingNotificationIntent = PendingIntent.getActivity( this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         //notification.flags |= Notification.FLAG_AUTO_CANCEL;
         //notification.setLatestEventInfo(this.getApplicationContext(), "AlarmManagerDemo", "This is a test message!", pendingNotificationIntent);
 
-        for (int count = 0; count < events.size(); count++) {
+        long domain_id = 1;
+        String userApiKey = user.getApiKey();
+        EventAccess eventAccess = new EventAccess(userApiKey);
+        eventAccess.getEvents(this, domain_id);
+
+        /*for (int count = 0; count < events.size(); count++) {
             Event currentEvent = events.get(count);
             String startDate = currentEvent.DateToStringParser(currentEvent.getStartDate());
             String endDate = currentEvent.DateToStringParser(currentEvent.getEndDate());
@@ -144,19 +159,20 @@ public class NotificationAlarmServiceActivity extends Service {
                     .setContentText(timeDiff);
                     //.setStyle(new Notification.BigTextStyle().bigText(timeDiff));
 
-            /*NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             inboxStyle.setBigContentTitle(currentEvent.getName());
             inboxStyle.addLine(timeDiff);
             inboxStyle.addLine(startDate);
             inboxStyle.addLine((endDate));
 
-            builder.setStyle(inboxStyle);*/
+            builder.setStyle(inboxStyle);
 
             Notification notification = builder.getNotification();
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
             mManager.notify(eid, notification);
-        }
+        }*/
+
         /*Notification.Builder builder = new Notification.Builder(NotificationAlarmServiceActivity.this);
         builder.setSmallIcon(android.R.drawable.stat_sys_download) //android.R.drawable.stat_sys_download
                 .setContentTitle("ContentTitle")
@@ -217,5 +233,54 @@ public class NotificationAlarmServiceActivity extends Service {
     {
         // TODO Auto-generated method stub
         super.onDestroy();
+    }
+
+    @Override
+    public void onError(String message) {
+
+    }
+
+    @Override
+    public void onResponse(Object response) {
+        if (response != null) {
+            events.clear();
+            events.addAll((List<Event>) response);
+
+            for (int count = 0; count < events.size(); count++) {
+                Event currentEvent = events.get(count);
+
+                if (currentEvent.getStatus() == 1) {
+                    String startDate = currentEvent.DateToStringParser(currentEvent.getStartDate());
+                    String endDate = currentEvent.DateToStringParser(currentEvent.getEndDate());
+                    int eid = (int) currentEvent.getId();
+
+                    Period period = printDifference(currentEvent.getStartDate(), currentEvent.getEndDate());
+
+                    StringBuilder sb = new StringBuilder();
+                    if (period.getDays() != 0) {
+                        sb.append("Days: " + period.getDays() + " ");
+                    }
+                    sb.append("Hours: " + period.getHours() + " ");
+                    if (period.getDays() == 0) {
+                        sb.append("Minutes: " + period.getMinutes() + " ");
+                    }
+                    sb.append("Time Left."); //or too much
+                    String timeDiff = sb.toString();
+
+                    Notification.Builder builder = new Notification.Builder(NotificationAlarmServiceActivity.this);
+                    builder.setSmallIcon(android.R.drawable.stat_sys_download) //android.R.drawable.stat_sys_download
+                            .setContentTitle(currentEvent.getName()) //timeDiff + "\n" + currentEvent.getName() + "\n" + startDate + "\n" + endDate
+                            .setContentIntent(pendingNotificationIntent)
+                            .setContentText(timeDiff);
+                    //.setStyle(new Notification.BigTextStyle().bigText(timeDiff));
+
+                    Notification notification = builder.getNotification();
+                    notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                    mManager.notify(eid, notification);
+                } //else if starthilfe
+            }
+        }
+
     }
 }
