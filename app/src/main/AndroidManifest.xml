@@ -111,6 +111,18 @@
             android:enabled="true" />
 
         <receiver android:name="com.example.is2.test2qrventory.notification.NotificationReceiver"/>
+        <!-- A child of the categoryitem activity -->
+        <activity
+            android:name=".ItemActivity"
+            android:label="Item"
+            android:parentActivityName=".CategoryItemActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CategoryItemActivity" />
+        </activity>
+        <activity android:name=".EventActivity"></activity>
     </application>
 
 </manifest>
