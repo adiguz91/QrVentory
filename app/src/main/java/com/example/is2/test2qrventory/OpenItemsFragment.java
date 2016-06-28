@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.is2.test2qrventory.connection.ItemAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
@@ -38,6 +39,8 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
     private OnFragmentInteractionListener mListener;
     List<Item> items = new ArrayList<>();
     User user = null;
+    ListView listViewOpenItems = null;
+    private CustomItemListAdapter adapter;
 
 
     public OpenItemsFragment() {
@@ -73,8 +76,8 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
         user = getActivity().getIntent().getParcelableExtra("user");
         long domain_id = 1;
         String userApiKey = user.getApiKey();
-        /*ItemAccess itemAccess = new ItemAccess(userApiKey);
-        itemAccess.getItem(this, domain_id);*/
+        ItemAccess itemAccess = new ItemAccess(userApiKey);
+        itemAccess.getItemsFromDomain(this, domain_id);
     }
 
     @Override
@@ -83,7 +86,13 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
         // Inflate the layout for this fragment
 
         View rootView =  inflater.inflate(R.layout.fragment_open_items, container, false);
-        container.setClickable(false);
+
+        listViewOpenItems = (ListView) rootView.findViewById(R.id.list_view_open_items);
+
+        adapter = new CustomItemListAdapter((TabbedEventSingleActivity) getActivity(), items); // category.getSubcategories()
+
+        listViewOpenItems.setAdapter(adapter);
+
         return rootView;
     }
 
@@ -130,7 +139,7 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
 
             // notifying list adapter about data changes
             // so that it renders the list view with updated data
-            //adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
     }
 
