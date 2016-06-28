@@ -60,18 +60,18 @@ public class EventListActivity extends AppCompatActivity implements VolleyRespon
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
                 Event event = (Event) adapter.getItemAtPosition(position);
-                //nextActivity(EventSingle.class, event);
+                nextActivity(EventSingleActivity.class, event);
             }
         });
     }
 
     private void nextActivity(Class activity_class, Object object) {
-        Intent intent = new Intent(getBaseContext(), ItemActivity.class);
+        Intent intent = new Intent(getBaseContext(), activity_class); //ItemActivity.class
         //based on item add info to intent
         intent.putExtra("user", user);
 
         if(object.getClass() == Event.class)
-            intent.putExtra("item", (Event) object);
+            intent.putExtra("event", (Event) object);
 
         startActivity(intent);
     }

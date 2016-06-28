@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-            nextActivity(EventListActivity.class, user);
+            nextActivity(TabbedEventsActivity.class, user); //EventListActivity
         } else if (id == R.id.nav_printer) {
             nextActivity(PrintActivity.class);
         } else if (id == R.id.nav_scanner) {

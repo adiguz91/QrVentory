@@ -116,7 +116,7 @@ public class NotificationAlarmServiceActivity extends Service implements VolleyR
         super.onStart(intent, startId);
 
         user = intent.getParcelableExtra("user");
-        String test = user.getFirstname();
+        //String test = user.getFirstname();
 
         mManager = (NotificationManager) this.getApplicationContext().getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
         Intent intent1 = new Intent(this.getApplicationContext(), MainActivity.class);
