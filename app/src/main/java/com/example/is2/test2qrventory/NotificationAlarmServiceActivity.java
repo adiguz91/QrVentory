@@ -115,23 +115,30 @@ public class NotificationAlarmServiceActivity extends Service implements VolleyR
     {
         super.onStart(intent, startId);
 
-        user = intent.getParcelableExtra("user");
-        //String test = user.getFirstname();
 
-        mManager = (NotificationManager) this.getApplicationContext().getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
-        Intent intent1 = new Intent(this.getApplicationContext(), MainActivity.class);
+        try {
 
-        //Notification notification = new Notification(R.drawable.ic_launcher,"This is a test message!", System.currentTimeMillis());
-        intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            user = intent.getParcelableExtra("user");
+            //String test = user.getFirstname();
 
-        pendingNotificationIntent = PendingIntent.getActivity( this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-        //notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        //notification.setLatestEventInfo(this.getApplicationContext(), "AlarmManagerDemo", "This is a test message!", pendingNotificationIntent);
+            mManager = (NotificationManager) this.getApplicationContext().getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
+            Intent intent1 = new Intent(this.getApplicationContext(), MainActivity.class);
 
-        long domain_id = 1;
-        String userApiKey = user.getApiKey();
-        EventAccess eventAccess = new EventAccess(userApiKey);
-        eventAccess.getEvents(this, domain_id);
+            //Notification notification = new Notification(R.drawable.ic_launcher,"This is a test message!", System.currentTimeMillis());
+            intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            pendingNotificationIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            //notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            //notification.setLatestEventInfo(this.getApplicationContext(), "AlarmManagerDemo", "This is a test message!", pendingNotificationIntent);
+
+            long domain_id = 1;
+            String userApiKey = user.getApiKey();
+            EventAccess eventAccess = new EventAccess(userApiKey);
+            eventAccess.getEvents(this, domain_id);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
 
         /*for (int count = 0; count < events.size(); count++) {
             Event currentEvent = events.get(count);

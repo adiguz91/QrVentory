@@ -147,8 +147,8 @@
         <!-- android:theme="@style/AppTheme.NoActionBar"></activity> -->
         <activity
             android:name=".TabbedEventSingleActivity"
-            android:label="@string/title_activity_tabbed_event_single"
-            android:theme="@style/AppTheme"></activity>
+            android:label="@string/title_activity_tabbed_event_single" />
+        <!--android:theme="@style/AppTheme"></activity>-->
     </application>
 
 </manifest>

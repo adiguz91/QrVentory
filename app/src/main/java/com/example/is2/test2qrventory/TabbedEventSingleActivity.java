@@ -25,7 +25,7 @@ import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabbedEventSingleActivity extends AppCompatActivity implements VolleyResponseListener, EventInfoFragment.OnFragmentInteractionListener{
+public class TabbedEventSingleActivity extends AppCompatActivity implements VolleyResponseListener, EventInfoFragment.OnFragmentInteractionListener, OpenItemsFragment.OnFragmentInteractionListener, ClosedItemsFragment.OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -79,10 +79,20 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
         //do stuff
     }
 
+    @Override
+    public void onOpenItemsFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onClosedItemsFragmentInteraction(Uri uri) {
+
+    }
+
     private void setupViewPager(ViewPager viewPager) {
-        mSectionsPagerAdapter.addFragment(new OpenEventsFragment(), "Event Info");
-        mSectionsPagerAdapter.addFragment(new ClosedEventsFragment(), "Open Items");
-        mSectionsPagerAdapter.addFragment(new FinishedEventFragment(), "Closed Items");
+        mSectionsPagerAdapter.addFragment(new EventInfoFragment(), "Event Info");
+        mSectionsPagerAdapter.addFragment(new OpenItemsFragment(), "Open Items");
+        mSectionsPagerAdapter.addFragment(new ClosedItemsFragment(), "Closed Items");
         mViewPager.setAdapter(mSectionsPagerAdapter);
     }
 
@@ -118,6 +128,7 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
     public void onResponse(Object response) {
 
     }
+
 
     /**
      * A placeholder fragment containing a simple view.

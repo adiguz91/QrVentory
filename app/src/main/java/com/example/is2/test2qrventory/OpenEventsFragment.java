@@ -104,7 +104,7 @@ public class OpenEventsFragment extends Fragment implements VolleyResponseListen
                                     int position, long id) {
 
                 Event event = (Event) adapter.getItemAtPosition(position);
-                nextActivity(EventSingleActivity.class, event);
+                nextActivity(TabbedEventSingleActivity.class, event);
             }
         });
 
