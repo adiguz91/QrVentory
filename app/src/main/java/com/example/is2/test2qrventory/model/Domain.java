@@ -69,7 +69,7 @@ public class Domain implements Parcelable {
     private String Name;
     private String Description;
     private String ImageURL;
-    private List<Category> categorys = new ArrayList();
+    //private List<Category> categorys = new ArrayList();
 
     public long getIdCategoryRoot() {
         return IdCategoryRoot;
@@ -111,8 +111,8 @@ public class Domain implements Parcelable {
         ImageURL = image;
     }
 
-    public List<Category> getCategorys() {
+    /*public List<Category> getCategorys() {
         return categorys;
-    }
+    }*/
 
 }

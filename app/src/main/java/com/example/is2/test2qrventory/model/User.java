@@ -68,6 +68,10 @@ public class User implements Parcelable {
 
     // --------------------------
 
+    public User() {
+
+    }
+
     public User(String email, String password) {
         this.Email = email;
         this.Password = password;
@@ -80,7 +84,7 @@ public class User implements Parcelable {
     private String Lastname;
     private String ImageURL;
     private String ApiKey;
-    private List<Domain> Domains;
+    //private List<Domain> Domains;
 
     public String getPassword() {
         return Password;
@@ -136,11 +140,11 @@ public class User implements Parcelable {
         IdUser = idUser;
     }
 
-    public List<Domain> getDomains() {
+    /*public List<Domain> getDomains() {
         return Domains;
-    }
+    }*/
 
-    public void setDomains(List<Domain> domains) {
+    /*public void setDomains(List<Domain> domains) {
         Domains = domains;
-    }
+    }*/
 }
