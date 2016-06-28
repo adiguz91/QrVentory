@@ -62,5 +62,16 @@
 
     <string name="function_name_setting_type">Settings</string>
     <string name="text_view_printer_connection">Device connected: None </string>
+    <string name="title_activity_event_check">EventCheckActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_event_single">EventSingleActivity</string>
+
+    <!-- Events -->
+    <string name="button_event_start">Start Event</string>
+    <string name="title_activity_tabbed_events">TabbedEventsActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_tabbed_event_single">TabbedEventSingleActivity</string>
 
 </resources>

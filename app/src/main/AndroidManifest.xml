@@ -50,6 +50,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!-- android:theme="@style/MyMaterialTheme" -->
+
 
         <!-- The main/home activity (it has no parent activity) -->
         <activity
@@ -107,10 +109,11 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
-        <service android:name=".NotificationAlarmServiceActivity"
+        <service
+            android:name=".NotificationAlarmServiceActivity"
             android:enabled="true" />
 
-        <receiver android:name="com.example.is2.test2qrventory.notification.NotificationReceiver"/>
+        <receiver android:name=".notification.NotificationReceiver" />
         <!-- A child of the categoryitem activity -->
         <activity
             android:name=".ItemActivity"
@@ -123,14 +126,29 @@
                 android:value=".CategoryItemActivity" />
         </activity>
         <!-- A child of the categoryitem activity -->
-        <activity android:name=".EventListActivity"
+        <activity
+            android:name=".EventListActivity"
             android:label="Event"
             android:parentActivityName=".MainActivity">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity
+            android:name=".EventCheckActivity"
+            android:label="@string/title_activity_event_check"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".EventSingleActivity" />
+        <activity
+            android:name=".TabbedEventsActivity"
+            android:label="@string/title_activity_tabbed_events" />
+        <!-- android:theme="@style/AppTheme.NoActionBar"></activity> -->
+        <activity
+            android:name=".TabbedEventSingleActivity"
+            android:label="@string/title_activity_tabbed_event_single"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
