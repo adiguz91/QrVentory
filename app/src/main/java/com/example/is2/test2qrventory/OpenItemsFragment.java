@@ -8,6 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.is2.test2qrventory.connection.ItemAccess;
+import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Item;
+import com.example.is2.test2qrventory.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,7 +25,7 @@ import android.view.ViewGroup;
  * Use the {@link OpenItemsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OpenItemsFragment extends Fragment {
+public class OpenItemsFragment extends Fragment implements VolleyResponseListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +36,9 @@ public class OpenItemsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    List<Item> items = new ArrayList<>();
+    User user = null;
+
 
     public OpenItemsFragment() {
         // Required empty public constructor
@@ -58,13 +69,22 @@ public class OpenItemsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        user = getActivity().getIntent().getParcelableExtra("user");
+        long domain_id = 1;
+        String userApiKey = user.getApiKey();
+        /*ItemAccess itemAccess = new ItemAccess(userApiKey);
+        itemAccess.getItem(this, domain_id);*/
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_open_items, container, false);
+
+        View rootView =  inflater.inflate(R.layout.fragment_open_items, container, false);
+        container.setClickable(false);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -89,6 +109,29 @@ public class OpenItemsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onError(String message) {
+
+    }
+
+    @Override
+    public void onResponse(Object response) {
+        if(response != null)
+        {
+            items.clear();
+            //events.addAll((List<Event>) response);
+
+            for (int item_count = 0; item_count < ((List<Item>) response).size(); item_count++) {
+                Item item = ((List<Item>) response).get(item_count);
+                items.add(item);
+            }
+
+            // notifying list adapter about data changes
+            // so that it renders the list view with updated data
+            //adapter.notifyDataSetChanged();
+        }
     }
 
     /**
