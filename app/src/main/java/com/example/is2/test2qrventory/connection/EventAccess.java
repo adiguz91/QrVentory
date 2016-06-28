@@ -101,7 +101,7 @@ public class EventAccess {
             boolean isError = response_json.getBoolean("error");
             if(!isError) {
 
-                JSONArray events_response = response_json.getJSONArray("events");
+                JSONArray events_response = response_json.getJSONArray("Events");
                 Event event;
                 for (int i = 0; i < events_response.length(); i++) {
                     event = new Event();

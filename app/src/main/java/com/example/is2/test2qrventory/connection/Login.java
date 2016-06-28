@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.is2.test2qrventory.LoginActivity;
+import com.example.is2.test2qrventory.controller.AppController;
 import com.example.is2.test2qrventory.model.User;
 
 import org.json.JSONException;
@@ -29,10 +30,10 @@ public class Login {
         user = new User(email,password);
     }
 
-    public void execute(final VolleyResponseListener listener) {
+    public void authentifiacation(final VolleyResponseListener listener) {
 
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringLoginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -41,12 +42,12 @@ public class Login {
                         JSONObject person = null;
                         try {
                             person = new JSONObject(response);
-                            //IdUser = person.getLong("id");
+                            user.setIdUser(person.getLong("IdUser"));
                             user.setEmail(person.getString("Email"));
                             user.setApiKey(person.getString("ApiKey"));
                             user.setFirstname(person.getString("Firstname"));
                             user.setLastname(person.getString("Lastname"));
-                            user.setImage(person.getString("Image"));
+                            user.setImageURL(person.getString("Image"));
 
                             //byte[] decodedString = Base64.decode(person.getString("image"), Base64.DEFAULT);
                             //Bitmap bitmap_decoded = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -78,6 +79,6 @@ public class Login {
         };
 
         // Add the request to the RequestQueue.
-        LoginActivity.getInstance().getRequestQueue().add(stringRequest);
+        AppController.getInstance().addToRequestQueue(stringLoginRequest);
     }
 }

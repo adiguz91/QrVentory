@@ -2,11 +2,13 @@ package com.example.is2.test2qrventory;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.epson.lwprint.sdk.nsd.dns.DNSRecord;
+import com.example.is2.test2qrventory.connection.CategoryAccess;
 import com.example.is2.test2qrventory.model.Item;
 import com.example.is2.test2qrventory.model.User;
 import com.github.clans.fab.FloatingActionButton;
@@ -34,13 +36,6 @@ public class ItemActivity extends AppCompatActivity {
 
         fab_update.setOnClickListener(onUpdateHandler);
         fab_delete.setOnClickListener(onDeleteHandler);
-
-        /*fab_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String test = "test";
-            }
-        });*/
 
         // enable UP navigation
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

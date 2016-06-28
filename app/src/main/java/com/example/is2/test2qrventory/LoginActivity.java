@@ -41,17 +41,12 @@ import org.json.JSONObject;
  */
 public class LoginActivity extends AppCompatActivity implements VolleyResponseListener {
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    //private UserLoginTask mAuthTask = null;
-
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
-    //private View mLoginFormView;
 
+    private static LoginActivity activity_instance;
     private User user = null;
 
     @Override
@@ -88,16 +83,16 @@ public class LoginActivity extends AppCompatActivity implements VolleyResponseLi
         activity_instance = this;
     }
 
+    public static synchronized LoginActivity getInstance() {
+        return activity_instance;
+    }
+
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-
-        /*if (mAuthTask != null) {
-            return;
-        }*/
 
         // Reset errors.
         mEmailView.setError(null);
@@ -138,24 +133,8 @@ public class LoginActivity extends AppCompatActivity implements VolleyResponseLi
             showProgress(true);
 
             Login login = new Login(email, password);
-            login.execute(this);
+            login.authentifiacation(this);
         }
-    }
-
-    public static synchronized LoginActivity getInstance() {
-        return activity_instance;
-    }
-
-    private static LoginActivity activity_instance;
-
-    // Instantiate the RequestQueue.
-    RequestQueue queue = null;
-
-    public RequestQueue getRequestQueue() {
-        if(queue == null) {
-            queue = Volley.newRequestQueue(this); // this.getApplicationContext()
-        }
-        return queue;
     }
 
     private boolean isEmailValid(String email) {
@@ -199,8 +178,6 @@ public class LoginActivity extends AppCompatActivity implements VolleyResponseLi
         if (user != null) {
             //finish();
             nextActivity(MainActivity.class, user);
-
-
         } else {
             mPasswordView.setError(getString(R.string.error_incorrect_password));
             mPasswordView.requestFocus();

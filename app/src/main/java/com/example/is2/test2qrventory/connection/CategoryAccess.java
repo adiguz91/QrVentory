@@ -112,6 +112,8 @@ public class CategoryAccess {
                     item.setDescription(items.getJSONObject(i).getString("Description"));
                     item.setImageURL(items.getJSONObject(i).getString("Image"));
                     item.setIsQR((items.getJSONObject(i).getInt("IsQR") == 1) ? true : false);
+                    item.setQRcodeURL(items.getJSONObject(i).getString("QRcode"));
+                    item.setBarcodeURL(items.getJSONObject(i).getString("Barcode"));
                     category.getItems().add(item);
                 }
             }

@@ -52,15 +52,21 @@ public class DomainAccess {
                             boolean isError = json_response.getBoolean("error");
 
                             if(!isError) {
-                                JSONArray domains = json_response.getJSONArray("domains");
+                                JSONArray domains = json_response.getJSONArray("Domains");
 
                                 Domain domain = null;
                                 for (int i = 0; i < domains.length(); i++) {
                                     domain = new Domain();
+                                    domain.setIdDomain(domains.getJSONObject(i).getLong("IdDomain"));
                                     domain.setName(domains.getJSONObject(i).getString("Name"));
+                                    domain.setDescription(domains.getJSONObject(i).getString("Description"));
+                                    domain.setImageURL(domains.getJSONObject(i).getString("Image"));
+
+                                    JSONObject category_root = domains.getJSONObject(i).getJSONObject("CategoryRoot");
+                                    domain.setIdCategoryRoot(category_root.getLong("IdCategory"));
+
                                     domain_list.add(domain);
                                 }
-
                             }
 
                             //byte[] decodedString = Base64.decode(json_response.getString("image"), Base64.DEFAULT);

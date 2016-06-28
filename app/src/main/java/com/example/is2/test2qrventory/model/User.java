@@ -33,7 +33,7 @@ public class User implements Parcelable {
         //dest.writeParcelable(Image, flags);
         dest.writeString(ImageURL);
         dest.writeString(ApiKey);
-        dest.writeList(Domains);
+        //dest.writeList(Domains);
     }
 
     /**
@@ -50,7 +50,7 @@ public class User implements Parcelable {
         //this.Image = in.readParcelable(null);
         this.ImageURL = in.readString();
         this.ApiKey = in.readString();
-        this.Domains = in.readArrayList(null);
+        //this.Domains = in.readArrayList(null);
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -73,44 +73,44 @@ public class User implements Parcelable {
         this.Password = password;
     }
 
-    private static long IdUser;
-    private static String Email;
-    private static String Password;
-    private static String Firstname;
-    private static String Lastname;
-    private static String ImageURL;
-    private static String ApiKey;
-    private static List<Domain> Domains;
+    private long IdUser;
+    private String Email;
+    private String Password;
+    private String Firstname;
+    private String Lastname;
+    private String ImageURL;
+    private String ApiKey;
+    private List<Domain> Domains;
 
-    public static String getPassword() {
+    public String getPassword() {
         return Password;
     }
 
-    public static void setPassword(String password) {
+    public void setPassword(String password) {
         Password = password;
     }
 
-    public static String getLastname() {
+    public String getLastname() {
         return Lastname;
     }
 
-    public static void setLastname(String lastname) {
+    public void setLastname(String lastname) {
         Lastname = lastname;
     }
 
-    public static String getImage() {
+    public String getImageURL() {
         return ImageURL;
     }
 
-    public static void setImage(String image) {
+    public void setImageURL(String image) {
         ImageURL = image;
     }
 
-    public static String getApiKey() {
+    public String getApiKey() {
         return ApiKey;
     }
 
-    public static void setApiKey(String apiKey) {
+    public void setApiKey(String apiKey) {
         ApiKey = apiKey;
     }
 
@@ -128,19 +128,19 @@ public class User implements Parcelable {
         Firstname = firstname;
     }
 
-    public static long getIdUser() {
+    public long getIdUser() {
         return IdUser;
     }
 
-    public static void setIdUser(long idUser) {
+    public void setIdUser(long idUser) {
         IdUser = idUser;
     }
 
-    public static List<Domain> getDomains() {
+    public List<Domain> getDomains() {
         return Domains;
     }
 
-    public static void setDomains(List<Domain> domains) {
+    public void setDomains(List<Domain> domains) {
         Domains = domains;
     }
 }

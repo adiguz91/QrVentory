@@ -80,56 +80,15 @@ public class MainActivity extends AppCompatActivity
 
         initListView();
 
-        /*NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(android.R.drawable.stat_sys_download)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
-
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        // Because clicking the notification opens a new ("special") activity, there's
-        // no need to create an artificial back stack.
-        PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        // Sets an ID for the notification
-        int mNotificationId = 001;
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());*/
-
-        //Calendar calendar = Calendar.getInstance();
-
-        /*calendar.set(Calendar.MONTH, 6);
-        calendar.set(Calendar.YEAR, 2013);
-        calendar.set(Calendar.DAY_OF_MONTH, 13);*/
-
-        /*calendar.set(Calendar.HOUR_OF_DAY, 20);
-        calendar.set(Calendar.MINUTE, 48);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.AM_PM,Calendar.PM);*/
 
         Intent myIntent = new Intent(MainActivity.this, NotificationReceiver.class);
         myIntent.putExtra("user", user);
         pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, myIntent,0);
 
-        // We want the alarm to go off 3 seconds from now.
-        //long firstTime = SystemClock.
-        //long firstTime = 3 * 1000;//start 3 seconds after first register.
-
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         //alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis() , pendingIntent);
         long interval = 60 * 1000;
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
-
-
     }
 
     public void cancelAlarm(View view) {
@@ -138,8 +97,6 @@ public class MainActivity extends AppCompatActivity
             //Toast.makeText(this, "Alarm Canceled", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     private void initListView() {
         listView = (ListView) findViewById(R.id.list);
@@ -242,33 +199,25 @@ public class MainActivity extends AppCompatActivity
         hidePDialog();
 
         List<Domain> new_domains = (List<Domain>) response;
-
         domains.addAll(new_domains);
 
         // notifying list adapter about data changes
         // so that it renders the list view with updated data
         adapter.notifyDataSetChanged();
 
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
             @Override
             public void onItemClick(AdapterView<?> adapter,View v, int position, long id){
-
-                Domain item = (Domain) adapter.getItemAtPosition(position);
-
-                Intent intent = new Intent(getBaseContext(), CategoryItemActivity.class);
-                //based on item add info to intent
-                intent.putExtra("user", user);
-                intent.putExtra("domain_id", item.getIdDomain());
-
-                startActivity(intent);
-
+            Domain domain = (Domain) adapter.getItemAtPosition(position);
+            Intent intent = new Intent(getBaseContext(), CategoryItemActivity.class);
+            intent.putExtra("user", user);
+            intent.putExtra("domain", domain);
+            startActivity(intent);
             }
 
 
         });
-
     }
 
     @Override

@@ -26,8 +26,8 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
     private List<Object> categories_items = new ArrayList<>();
     private ListView listView;
     private CustomCategoryListAdapter adapter;
-    private int domain_index;
     private User user;
+    private Domain domain;
     private List<Integer> moveList = new ArrayList<>();
     //private int actual_category;
 
@@ -45,33 +45,10 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
 
         // Fetching data from a parcelable object passed from LoginActivity
         user = getIntent().getParcelableExtra("user");
-        domain_index = getIntent().getIntExtra("domain_index", -1);
+        domain = getIntent().getParcelableExtra("domain");
 
         initListView();
     }
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if(id== R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-*/
 
     private void initListView() {
         listView = (ListView) findViewById(R.id.list_category);
@@ -83,14 +60,11 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        int category_root_id = 1;
-        moveList.add(category_root_id);
+        moveList.add((int) domain.getIdCategoryRoot());
 
         String userApiKey = user.getApiKey();
         CategoryAccess categoryAccess = new CategoryAccess(userApiKey);
-        categoryAccess.getRootCategory(this, 1, 1);
-                //user.getDomains().get(domain_index).getIdDomain(),
-                //user.getDomains().get(domain_index).getIdRootCategory());
+        categoryAccess.getRootCategory(this, domain.getIdDomain(), domain.getIdCategoryRoot());
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
@@ -113,12 +87,20 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
     }
 
     private void nextActivity(Class activity_class, Object object) {
-        Intent intent = new Intent(getBaseContext(), ItemActivity.class);
+        Intent intent = new Intent(getBaseContext(), activity_class);
         //based on item add info to intent
         intent.putExtra("user", user);
 
         if(object.getClass() == Item.class)
             intent.putExtra("item", (Item) object);
+
+        startActivity(intent);
+    }
+
+    private void nextActivity(Class activity_class) {
+        Intent intent = new Intent(getBaseContext(), activity_class);
+        //based on item add info to intent
+        intent.putExtra("user", user);
 
         startActivity(intent);
     }
@@ -133,20 +115,21 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
         //}
 
         if(moveList.size() < 2) {
-            return super.onOptionsItemSelected(item);
+            //return super.onOptionsItemSelected(item);
+            nextActivity(MainActivity.class);
         } else {
             String userApiKey = user.getApiKey();
             CategoryAccess categoryAccess = new CategoryAccess(userApiKey);
-            categoryAccess.getRootCategory(this, 1,moveList.get(moveList.size() - 2));
+            categoryAccess.getRootCategory(this, domain.getIdDomain(), moveList.get(moveList.size() - 2));
             moveList.remove(moveList.size()-1);
-            return true;
         }
+        return true;
     }
 
     private void onCategoryClick(Category category) {
         String userApiKey = user.getApiKey();
         CategoryAccess categoryAccess = new CategoryAccess(userApiKey);
-        categoryAccess.getRootCategory(this, 1, category.getId());
+        categoryAccess.getRootCategory(this, domain.getIdDomain(), category.getId());
     }
 
     @Override
