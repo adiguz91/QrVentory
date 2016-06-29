@@ -14,15 +14,22 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
         android:focusableInTouchMode="true"
-        android:weightSum="1">
-    <!-- tools:context="com.example.is2.test2qrventory.printer.PrintActivity" -->
+        android:weightSum="1"
+        tools:context="com.example.is2.test2qrventory.printer.PrintActivity">
 
-        <TextView
+        <!--<TextView
             android:id="@+id/discover_printer_text_view"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:background="@drawable/border"
+            android:text="@string/button_search_no" />-->
+
+        <Button
+            android:id="@+id/button_discover_printer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:text="@string/button_search_no" />
 
         <Button

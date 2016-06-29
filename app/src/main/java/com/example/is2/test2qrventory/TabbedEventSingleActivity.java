@@ -22,9 +22,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.is2.test2qrventory.connection.EventAccess;
+import com.example.is2.test2qrventory.connection.ItemAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.Item;
+import com.example.is2.test2qrventory.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +53,12 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
     Event event = null;
     private com.github.clans.fab.FloatingActionButton fab_scan_items;
     private static final int REQUEST_ACTIVITY_SCAN_ITEMS = 1;
-    String itemId;
+    /*String itemId;
     String eventId;
-    int codeType;
+    int codeType;*/
+    User user = null;
+    EventAccess eventAccess = null;
+    ItemAccess itemAccess = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +93,12 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
 
         fab_scan_items.setOnClickListener(onScanItemsHandler);
 
+        user = getIntent().getParcelableExtra("user");
+        event = getIntent().getParcelableExtra("event");
+        String userApiKey = user.getApiKey();
+        eventAccess = new EventAccess(userApiKey);
+
+        itemAccess = new ItemAccess(userApiKey);
     }
 
     View.OnClickListener onScanItemsHandler = new View.OnClickListener() {
@@ -106,24 +118,29 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
                     Bundle extras = data.getExtras();
                     if (extras != null) {
                         String concatenatedCode = extras.getString("data");
-                        codeType = extras.getInt("type");
+                        int codeType = extras.getInt("type");
+                        String itemId = null;
                         if (codeType == 8) {
-                            String concatenatedCodeWithoutLastDigit = concatenatedCode.substring(0, concatenatedCode.length() - 1);
-                            String scannedEventId = concatenatedCodeWithoutLastDigit.substring(0, Math.min(concatenatedCodeWithoutLastDigit.length(), 3));
-                            eventId = Integer.valueOf(scannedEventId).toString();
-                            String scannedItemId = concatenatedCodeWithoutLastDigit.substring(concatenatedCodeWithoutLastDigit.length() - 4);
-                            itemId = Integer.valueOf(scannedItemId).toString();
+                            itemId = concatenatedCode.substring(0, concatenatedCode.length() - 1);
+                            //String scannedEventId = concatenatedCodeWithoutLastDigit.substring(0, Math.min(concatenatedCodeWithoutLastDigit.length(), 3));
+                            //eventId = Integer.valueOf(scannedEventId).toString();
+                            //String scannedItemId = concatenatedCodeWithoutLastDigit.substring(concatenatedCodeWithoutLastDigit.length() - 4);
+                            itemId = Integer.valueOf(itemId).toString();
                         } else if (codeType == 13) {
-                            String concatenatedCodeWithoutLastDigit = concatenatedCode.substring(0, concatenatedCode.length() - 1);
-                            String scannedEventId = concatenatedCodeWithoutLastDigit.substring(0, Math.min(concatenatedCodeWithoutLastDigit.length(), 5));
-                            eventId = Integer.valueOf(scannedEventId).toString();
-                            String scannedItemId = concatenatedCodeWithoutLastDigit.substring(concatenatedCodeWithoutLastDigit.length() - 7);
-                            itemId = Integer.valueOf(scannedItemId).toString();
+                            itemId = concatenatedCode.substring(0, concatenatedCode.length() - 1);
+                            //String scannedEventId = concatenatedCodeWithoutLastDigit.substring(0, Math.min(concatenatedCodeWithoutLastDigit.length(), 5));
+                            //eventId = Integer.valueOf(scannedEventId).toString();
+                            //String scannedItemId = concatenatedCodeWithoutLastDigit.substring(concatenatedCodeWithoutLastDigit.length() - 7);
+                            itemId = Integer.valueOf(itemId).toString();
                         } else if (codeType == 64) {
-                            String[] separatedIds = concatenatedCode.split(",");
-                            eventId = separatedIds[0];
-                            itemId = separatedIds[1];
+                            itemId = concatenatedCode;
+                            //String[] separatedIds = concatenatedCode.split(",");
+                            //eventId = separatedIds[0];
+                            //itemId = separatedIds[1];
                         }
+
+                        eventAccess.setEventItemChecked(this, event.getId(), Long.parseLong(itemId));
+                        //itemAccess.getEventItemsThatNotExists(this, event.getIdDomain(), event.getId());
                     }
                 }
                 break;
