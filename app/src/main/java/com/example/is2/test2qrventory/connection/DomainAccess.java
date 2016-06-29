@@ -146,14 +146,14 @@ public class DomainAccess {
 
                             if(!isError) {
                                 long domain_id = json_response.getLong("IdDomain");
-                                long category_root_id = json_response.getLong("IdCategoryRoot");
-                                String image_url = json_response.getString("Image");
+                                //long category_root_id = json_response.getLong("IdCategoryRoot");
+                                //String image_url = json_response.getString("Image");
 
                                 if(domain_id > 0) {
                                     domain_new = domain;
                                     domain_new.setIdDomain(domain_id);
-                                    domain_new.setImageURL(image_url);
-                                    domain_new.setIdCategoryRoot(category_root_id);
+                                    //domain_new.setImageURL(image_url);
+                                    //domain_new.setIdCategoryRoot(category_root_id);
                                 } else {
                                     domain_new = null;
                                 }

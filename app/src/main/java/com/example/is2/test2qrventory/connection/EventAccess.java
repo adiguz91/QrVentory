@@ -83,6 +83,57 @@ public class EventAccess {
         AppController.getInstance().addToRequestQueue(getRootCategoryRequest);
     }
 
+    public void setEventItemChecked(final VolleyResponseListener listener, long event_id, long item_id) {
+
+        String url_new = url + "/" + event_id + "/" + item_id;
+
+        // Request a string response from the provided URL.
+        StringRequest getRootCategoryRequest = new StringRequest(Request.Method.GET, url_new,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        boolean result = false;
+                        try {
+                            JSONObject response_json = new JSONObject(response);
+                            boolean isError = response_json.getBoolean("error");
+                            if(!isError) {
+                                result = true;
+                            }
+                        } catch (JSONException e) {
+                            result = false;
+                            e.printStackTrace();
+                        }
+                        listener.onResponse(result);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onError(error.toString());
+                    }
+                }) {
+
+            /*@Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("email", user.getEmail());
+                params.put("password", user.getPassword());
+                return params;
+            }*/
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("X-Authorization", userApiKey);
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(getRootCategoryRequest);
+    }
+
     public void getAllEvents(final VolleyResponseListener listener) {
 
         // Request a string response from the provided URL.

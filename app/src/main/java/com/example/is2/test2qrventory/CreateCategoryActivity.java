@@ -1,5 +1,6 @@
 package com.example.is2.test2qrventory;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,15 +12,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.is2.test2qrventory.connection.CategoryAccess;
 import com.example.is2.test2qrventory.connection.DomainAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Category;
 import com.example.is2.test2qrventory.model.Domain;
 import com.example.is2.test2qrventory.model.User;
 import com.github.clans.fab.FloatingActionButton;
 
 import java.io.IOException;
 
-public class CreateDomainActivity extends AppCompatActivity implements VolleyResponseListener {
+public class CreateCategoryActivity extends AppCompatActivity implements VolleyResponseListener {
 
     private int PICK_IMAGE_REQUEST = 1;
     private Button loadImage;
@@ -29,24 +32,29 @@ public class CreateDomainActivity extends AppCompatActivity implements VolleyRes
     private Bitmap image_upload = null;
     private Toast toast;
 
-    private Domain domain_to_save = null;
-    private Domain domain_response = null;
     private User user = null;
+    private long domain_id = 0;
+    private int category_parent_id = 0;
+    private Category category_to_save = null;
+    private Category category_response = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_domain);
+        setContentView(R.layout.activity_create_category);
 
-        textEditName = (EditText) findViewById(R.id.name);
-        textEditDescription = (EditText) findViewById(R.id.description);
+        textEditName = (EditText) findViewById(R.id.name_category);
+        textEditDescription = (EditText) findViewById(R.id.description_category);
 
-        fab_save = (FloatingActionButton) findViewById(R.id.fab_save);
-        fab_save.setOnClickListener(onSaveDomainHandler);
+        fab_save = (FloatingActionButton) findViewById(R.id.fab_save_category);
+        fab_save.setOnClickListener(onSaveCategoryHandler);
 
         user = getIntent().getParcelableExtra("user");
 
-        loadImage = (Button) findViewById(R.id.buttonLoadImage);
+        domain_id = getIntent().getLongExtra("domain_id", 0);
+        category_parent_id = getIntent().getIntExtra("category_parent_id", 0);
+
+        loadImage = (Button) findViewById(R.id.buttonLoadImage_category);
         loadImage.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,27 +63,29 @@ public class CreateDomainActivity extends AppCompatActivity implements VolleyRes
         });
     }
 
-    View.OnClickListener onSaveDomainHandler = new View.OnClickListener() {
+    View.OnClickListener onSaveCategoryHandler = new View.OnClickListener() {
         public void onClick(View v) {
-            saveDomain();
+            saveCategory();
         }
     };
 
-    private void saveDomain() {
+    private void saveCategory() {
         // save into database
         String name = textEditName.getText().toString();
         String description = textEditDescription.getText().toString();
 
-        domain_to_save = new Domain();
-        domain_to_save.setName(name);
-        domain_to_save.setDescription(description);
+        category_to_save = new Category();
+        category_to_save.setName(name);
+        category_to_save.setDescription(description);
 
         if(image_upload != null) {
-            domain_to_save.setImageURL(image_upload.toString());
+            category_to_save.setImageURL(image_upload.toString());
         }
 
-        DomainAccess domainAccess = new DomainAccess(user.getApiKey());
-        domainAccess.addDomain(this, domain_to_save);
+        if(domain_id != 0 && category_parent_id != 0) {
+            CategoryAccess categoryAccess = new CategoryAccess(user.getApiKey());
+            categoryAccess.addCategory(this, category_to_save, domain_id, category_parent_id);
+        }
     }
 
     public void onButtonClickLoadImage()  {
@@ -116,7 +126,7 @@ public class CreateDomainActivity extends AppCompatActivity implements VolleyRes
     public void onResponse(Object response) {
         String message = "Failed to Save";
         if(response != null) {
-            domain_response = (Domain) response;
+            category_response = (Category) response;
             message = "Saved";
         }
         ShowToastMessage(message);
@@ -127,18 +137,10 @@ public class CreateDomainActivity extends AppCompatActivity implements VolleyRes
         toast.show();
     }
 
-    /* Optional getURL at/up API 19
-    /* private void getUri() {
-        Uri uri = data.getData();
-        String[] projection = { MediaStore.Images.Media.DATA };
+    /*@Override
+    public void onBackPressed()
+    {
 
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        cursor.moveToFirst();
-
-        //Log.d(TAG, DatabaseUtils.dumpCursorToString(cursor));
-
-        int columnIndex = cursor.getColumnIndex(projection[0]);
-        String picturePath = cursor.getString(columnIndex); // returns null
-        cursor.close();
+        super.onBackPressed();
     }*/
 }

@@ -70,8 +70,11 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
 
     View.OnClickListener onAddCategoryHandler = new View.OnClickListener() {
         public void onClick(View v) {
-            // it was the 1st button
-            String test = "Add Categories";
+            Intent intent = new Intent(getBaseContext(), CreateCategoryActivity.class);
+            intent.putExtra("user", user);
+            intent.putExtra("domain_id", domain.getIdDomain());
+            intent.putExtra("category_parent_id", moveList.get(moveList.size() - 1));
+            startActivity(intent);
         }
     };
 

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:id="@+id/name"
+            android:id="@+id/name_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Name"
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:id="@+id/description"
+            android:id="@+id/description_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description"
@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Upload Image"
-        android:id="@+id/buttonLoadImage" />
+        android:id="@+id/buttonLoadImage_category" />
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:fab="http://schemas.android.com/apk/res-auto"
@@ -59,7 +59,7 @@
         android:layout_height="match_parent">
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_save"
+            android:id="@+id/fab_save_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
@@ -71,4 +71,5 @@
             fab:fab_colorRipple="@color/dodgerblue"
             fab:fab_label="Save"/>
     </FrameLayout>
+
 </LinearLayout>
