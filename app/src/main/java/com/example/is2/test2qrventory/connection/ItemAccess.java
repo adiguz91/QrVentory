@@ -40,6 +40,10 @@ public class ItemAccess {
         this.url += item_id;
     }
 
+    public ItemAccess(String userApiKey) {
+        this.userApiKey = userApiKey;
+    }
+
     public void getItem(final VolleyResponseListener listener) {
 
         // Request a string response from the provided URL.

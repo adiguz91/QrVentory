@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.is2.test2qrventory.connection.EventAccess;
@@ -107,6 +108,12 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
 
         textViewTitle.setText(singleEvent.getName());
         textViewDescription.setText(singleEvent.getDescription());
+
+        /*TabHost tabHost = (TabHost) getActivity().findViewById(android.R.id.tabhost);
+        tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
+        tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);*/
+
+
 
         return rootView;
     }

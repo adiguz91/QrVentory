@@ -59,6 +59,8 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed_events);
 
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
