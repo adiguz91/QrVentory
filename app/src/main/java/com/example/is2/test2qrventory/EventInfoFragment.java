@@ -99,7 +99,8 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
         buttonEventStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //do stuff
+                singleEvent.setStatus(1);
+                //event DB UPDATE vom ADI
             }
         });
 

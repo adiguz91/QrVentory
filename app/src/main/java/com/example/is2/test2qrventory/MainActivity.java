@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity
         initListView();
 
 
+
         Intent myIntent = new Intent(MainActivity.this, NotificationReceiver.class);
         myIntent.putExtra("user", user);
         pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, myIntent,0);
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity
         long interval = 60 * 1000;
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
     }
+
 
     public void cancelAlarm(View view) {
         if (alarmManager != null) {
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-            nextActivity(TabbedEventsActivity.class, user); //EventListActivity
+            nextActivity(EventSingleActivity.class, user); //EventListActivity
         } else if (id == R.id.nav_printer) {
             nextActivity(PrintActivity.class);
         } else if (id == R.id.nav_scanner) {

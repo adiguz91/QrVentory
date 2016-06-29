@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.example.is2.test2qrventory.connection.EventAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Domain;
 import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.User;
 
@@ -44,6 +45,7 @@ public class ClosedEventsFragment extends Fragment implements VolleyResponseList
     List<Event> events = new ArrayList<>();
     private CustomEventListAdapter adapter;
     ListView listViewClosedEvents = null;
+    Domain domain = null;
 
     public ClosedEventsFragment() {
         // Required empty public constructor
@@ -76,7 +78,8 @@ public class ClosedEventsFragment extends Fragment implements VolleyResponseList
         }
 
         user = getActivity().getIntent().getParcelableExtra("user");
-        long domain_id = 1;
+        domain = getActivity().getIntent().getParcelableExtra("domain");
+        long domain_id = domain.getIdDomain();
         String userApiKey = user.getApiKey();
         EventAccess eventAccess = new EventAccess(userApiKey);
         eventAccess.getEvents(this, domain_id);

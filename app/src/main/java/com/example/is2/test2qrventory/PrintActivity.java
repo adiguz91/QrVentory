@@ -53,6 +53,8 @@ import com.epson.lwprint.sdk.LWPrintDiscoverPrinter;
 import com.epson.lwprint.sdk.LWPrintDataProvider;
 import com.epson.lwprint.sdk.LWPrintPrintingPhase;
 import com.epson.lwprint.sdk.LWPrintCallback;
+import com.example.is2.test2qrventory.model.Item;
+import com.example.is2.test2qrventory.model.User;
 import com.example.is2.test2qrventory.printer.LWPrintSampleUtil;
 import com.example.is2.test2qrventory.printer.Logger;
 import com.example.is2.test2qrventory.printer.PrinterStatus;
@@ -106,6 +108,9 @@ public class PrintActivity extends Activity implements OnClickListener {
 	Map<String, String> printerInfo = null;
 	Map<String, Object> printSettings = null;
 	Map<String, Integer> lwStatus = null;
+
+	User user = null;
+	Item singleItem = null;
 
 	android.os.Handler handler = new android.os.Handler();
 	/**
@@ -176,7 +181,10 @@ public class PrintActivity extends Activity implements OnClickListener {
 				return false;
 			}
 		});
-		editTextInputData.setText("Item Name");
+
+		user = getIntent().getParcelableExtra("user");
+		singleItem = getIntent().getParcelableExtra("item");
+		editTextInputData.setText(singleItem.getName());
 
 		buttonPrint = (Button) findViewById(R.id.button_print);
 		buttonPrint.setOnClickListener(this);
@@ -411,7 +419,9 @@ public class PrintActivity extends Activity implements OnClickListener {
 		return tapeStrings.get(tapeWidth);
 	}*/
 
-
+	public static String rightPadZeros(String str, int num) {
+		return String.format("%1$-" + num + "s", str).replace(' ', '0');
+	}
 
 	public boolean isProcessing() {
 		return processing;
@@ -494,10 +504,22 @@ public class PrintActivity extends Activity implements OnClickListener {
 				//print additional text
 				if (_formNames.get(_jobNumber).equals("QRCode")) {
 					sampleDataProvider.setFormName(_formNames.get(_jobNumber) + SUFFIX);
-					sampleDataProvider.setQrCodeData("QRCode"); //set Item Identifier for QRCode Print
+					int itemID = (int) singleItem.getId();
+					sampleDataProvider.setQrCodeData(Integer.toString(itemID)); //set Item Identifier for QRCode Print
 				} else if (_formNames.get(_jobNumber).equals("Barcode")) {
 					sampleDataProvider.setFormName(_formNames.get(_jobNumber) + SUFFIX);
-					sampleDataProvider.setBarcodeData("Barcode"); //set Item Identifier for Barcode Print
+					int itemID = (int) singleItem.getId();
+					String itemIDString = Integer.toString(itemID);
+					String barcodeType = sampleDataProvider.getBarcodeType();
+
+					String itemIDPadded = null;
+					if ("Code-EAN8".equals(barcodeType)) {
+						itemIDPadded = rightPadZeros(itemIDString, 7);
+					} else if ("Code-EAN13".equals(barcodeType)) {
+						itemIDPadded = rightPadZeros(itemIDString, 12);
+					}
+
+					sampleDataProvider.setBarcodeData(itemIDPadded); //set Item Identifier for Barcode Print
 				} else if (_formNames.get(_jobNumber).equals("String")) {
 					sampleDataProvider.setFormName("String" + SUFFIX);
 				}

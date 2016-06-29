@@ -104,6 +104,13 @@
                 android:src="@drawable/ic_close"
                 fab:fab_size="mini"
                 fab:fab_label="Delete" />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/menu_item_print"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_printer"
+                fab:fab_size="mini"
+                fab:fab_label="Print" />
 
         </com.github.clans.fab.FloatingActionMenu>
 

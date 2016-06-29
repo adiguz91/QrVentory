@@ -1,5 +1,6 @@
 package com.example.is2.test2qrventory;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,8 +20,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,10 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
     private ViewPager mViewPager;
     private TabLayout tabLayout;
 
+    private com.github.clans.fab.FloatingActionButton fab_scan_items;
+    private static final int REQUEST_ACTIVITY_SCAN_ITEMS = 1; //new
+    String scannedItemId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,19 +67,49 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
         setupViewPager(mViewPager);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        fab_scan_items = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.menu_item_scan_items);
+
+        fab_scan_items.setOnClickListener(onScanItemsHandler);
+
     }
+
+    View.OnClickListener onScanItemsHandler = new View.OnClickListener() {
+        public void onClick(View v) {
+            Intent intent = new Intent(getBaseContext(), ScanActivity.class);
+
+            startActivityForResult(intent, REQUEST_ACTIVITY_SCAN_ITEMS);
+        }
+    };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_ACTIVITY_SCAN_ITEMS:
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras();
+                    if (extras != null) {
+                        scannedItemId = extras.getString("scannedItemId");
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
 
     @Override
     public void onEventInfoFragmentInteraction(Uri uri) {

@@ -15,6 +15,7 @@ import com.example.is2.test2qrventory.model.Category;
 import com.example.is2.test2qrventory.model.Domain;
 import com.example.is2.test2qrventory.model.Item;
 import com.example.is2.test2qrventory.model.User;
+import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,9 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
     private Domain domain;
     private List<Integer> moveList = new ArrayList<>();
     //private int actual_category;
+    private FloatingActionButton fab_add_item;
+    private FloatingActionButton fab_add_category;
+    private FloatingActionButton fab_discover_events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,39 @@ public class CategoryItemActivity extends AppCompatActivity implements VolleyRes
         domain = getIntent().getParcelableExtra("domain");
 
         initListView();
+
+        fab_add_item = (FloatingActionButton) findViewById(R.id.menu_item_add_item);
+        fab_add_category = (FloatingActionButton) findViewById(R.id.menu_item_add_category);
+        fab_discover_events = (FloatingActionButton) findViewById(R.id.menu_item_discover_events);
+
+        fab_add_item.setOnClickListener(onAddItemHandler);
+        fab_add_category.setOnClickListener(onAddCategoryHandler);
+        fab_discover_events.setOnClickListener(onDiscoverEventsHandler);
     }
+
+    View.OnClickListener onAddItemHandler = new View.OnClickListener() {
+        public void onClick(View v) {
+            String test = "Add Items";
+        }
+    };
+
+    View.OnClickListener onAddCategoryHandler = new View.OnClickListener() {
+        public void onClick(View v) {
+            // it was the 1st button
+            String test = "Add Categories";
+        }
+    };
+
+    View.OnClickListener onDiscoverEventsHandler = new View.OnClickListener() {
+        public void onClick(View v) {
+            Intent intent = new Intent(getBaseContext(), TabbedEventsActivity.class);
+            //based on item add info to intent
+            intent.putExtra("user", user);
+            intent.putExtra("domain", domain);
+
+            startActivity(intent);
+        }
+    };
 
     private void initListView() {
         listView = (ListView) findViewById(R.id.list_category);

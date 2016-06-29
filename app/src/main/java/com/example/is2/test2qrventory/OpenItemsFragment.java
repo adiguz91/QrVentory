@@ -1,16 +1,19 @@
 package com.example.is2.test2qrventory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.is2.test2qrventory.connection.ItemAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.Item;
 import com.example.is2.test2qrventory.model.User;
 
@@ -93,7 +96,27 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
 
         listViewOpenItems.setAdapter(adapter);
 
+        listViewOpenItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> adapter, View view,
+                                    int position, long id) {
+
+                Item item = (Item) adapter.getItemAtPosition(position);
+                nextActivity(ItemActivity.class, item);
+            }
+        });
+
         return rootView;
+    }
+
+    private void nextActivity(Class activity_class, Object object) {
+        Intent intent = new Intent(getActivity().getBaseContext(), activity_class); //ItemActivity.class
+        //based on item add info to intent
+        intent.putExtra("user", user);
+
+        if(object.getClass() == Item.class)
+            intent.putExtra("item", (Item) object);
+
+        startActivity(intent);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

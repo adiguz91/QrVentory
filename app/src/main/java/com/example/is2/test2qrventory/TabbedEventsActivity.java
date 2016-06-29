@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.example.is2.test2qrventory.connection.EventAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Domain;
 import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.User;
 
@@ -51,6 +52,7 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
     User user = null;
     Event event = null;
     List<Event> events = new ArrayList<>();
+    Domain domain = null;
 
     public List<Event> getEvents() { return events; }
 
@@ -71,29 +73,30 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
         //mViewPager.setAdapter(mSectionsPagerAdapter);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        pDialog = new ProgressDialog(this);
+        /*pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
         pDialog.show();
 
         // Fetching data from a parcelable object passed from LoginActivity
         user = getIntent().getParcelableExtra("user");
-        long domain_id = 1;
+        domain = getIntent().getParcelableExtra("domain");
+        long domain_id = domain.getIdDomain();
         String userApiKey = user.getApiKey();
         EventAccess eventAccess = new EventAccess(userApiKey);
-        eventAccess.getEvents(this, domain_id);
+        eventAccess.getEvents(this, domain_id);*/
 
     }
 
@@ -149,7 +152,7 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
 
     @Override
     public void onResponse(Object response) {
-        if(response != null)
+        /*if(response != null)
         {
             hidePDialog();
 
@@ -159,20 +162,20 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
             // notifying list adapter about data changes
             // so that it renders the list view with updated data
            // adapter.notifyDataSetChanged();
-        }
+        }*/
     }
 
-    private void hidePDialog() {
+    /*private void hidePDialog() {
         if (pDialog != null) {
             pDialog.dismiss();
             pDialog = null;
         }
-    }
+    }*/
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        hidePDialog();
+        //hidePDialog();
     }
 
 

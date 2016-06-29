@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.example.is2.test2qrventory.connection.EventAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Domain;
 import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.User;
 
@@ -44,6 +45,7 @@ public class FinishedEventFragment extends Fragment implements VolleyResponseLis
     List<Event> events = new ArrayList<>();
     ListView listViewFinishedEvents = null;
     private CustomEventListAdapter adapter;
+    Domain domain = null;
 
     public FinishedEventFragment() {
         // Required empty public constructor
@@ -76,7 +78,8 @@ public class FinishedEventFragment extends Fragment implements VolleyResponseLis
         }
 
         user = getActivity().getIntent().getParcelableExtra("user");
-        long domain_id = 1;
+        domain = getActivity().getIntent().getParcelableExtra("domain");
+        long domain_id = domain.getIdDomain();
         String userApiKey = user.getApiKey();
         EventAccess eventAccess = new EventAccess(userApiKey);
         eventAccess.getEvents(this, domain_id);
@@ -156,7 +159,7 @@ public class FinishedEventFragment extends Fragment implements VolleyResponseLis
             for (int event_count = 2; event_count < ((List<Event>) response).size(); event_count++) {
                 Event event = ((List<Event>) response).get(event_count);
                 int event_status = event.getStatus();
-                if (event_status == 0) {
+                if (event_status == 2) {
                     events.add(event);
                 }
             }

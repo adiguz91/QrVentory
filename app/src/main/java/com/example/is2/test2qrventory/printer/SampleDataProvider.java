@@ -124,7 +124,7 @@ public class SampleDataProvider implements LWPrintDataProvider {
 
                 HashMap<String, String> elementMap = new HashMap<String, String>();
                 String keyName = getBarcodeType();
-                String keyValue = "1234567"; //here comes the database ID instead
+                String keyValue = getBarcodeData(); //here comes the database ID instead
                 elementMap.put(keyName, keyValue);
                 ContentsData objData = new ContentsData();
                 objData.setElementMap(elementMap);

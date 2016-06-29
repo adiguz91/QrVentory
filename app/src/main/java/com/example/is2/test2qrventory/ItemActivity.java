@@ -1,5 +1,6 @@
 package com.example.is2.test2qrventory;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ public class ItemActivity extends AppCompatActivity {
 
     private FloatingActionButton fab_update;
     private FloatingActionButton fab_delete;
+    private FloatingActionButton fab_print;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +35,14 @@ public class ItemActivity extends AppCompatActivity {
 
         fab_update = (FloatingActionButton) findViewById(R.id.menu_item_update);
         fab_delete = (FloatingActionButton) findViewById(R.id.menu_item_delete);
+        fab_print = (FloatingActionButton) findViewById(R.id.menu_item_print);
 
         fab_update.setOnClickListener(onUpdateHandler);
         fab_delete.setOnClickListener(onDeleteHandler);
+        fab_print.setOnClickListener(onPrintHandler);
 
         // enable UP navigation
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Fetching data from a parcelable object passed from CategoryItemActivity
         user = getIntent().getParcelableExtra("user");
@@ -60,5 +64,22 @@ public class ItemActivity extends AppCompatActivity {
             String test = "update";
         }
     };
+
+    View.OnClickListener onPrintHandler = new View.OnClickListener() {
+        public void onClick(View v) {
+            nextActivity(PrintActivity.class, single_item);
+        }
+    };
+
+    private void nextActivity(Class activity_class, Object object) {
+        Intent intent = new Intent(getBaseContext(), activity_class); //ItemActivity.class
+        //based on item add info to intent
+        intent.putExtra("user", user);
+
+        if(object.getClass() == Item.class)
+            intent.putExtra("item", (Item) object);
+
+        startActivity(intent);
+    }
 
 }
