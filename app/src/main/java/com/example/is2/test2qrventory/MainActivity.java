@@ -43,14 +43,19 @@ public class MainActivity extends AppCompatActivity
     private CustomListAdapter adapter;
 
     private User user = null;
-
     private PendingIntent pendingIntent;
     private AlarmManager alarmManager;
+
+    private com.github.clans.fab.FloatingActionButton fab_add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        fab_add = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.menu_item_update);
+        fab_add.setOnClickListener(onAddDomainHandler);
+
 
         // Fetching data from a parcelable object passed from LoginActivity
         user = getIntent().getParcelableExtra("user");
@@ -58,14 +63,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -80,8 +85,6 @@ public class MainActivity extends AppCompatActivity
 
         initListView();
 
-
-
         Intent myIntent = new Intent(MainActivity.this, NotificationReceiver.class);
         myIntent.putExtra("user", user);
         pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, myIntent,0);
@@ -92,6 +95,12 @@ public class MainActivity extends AppCompatActivity
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
     }
 
+    View.OnClickListener onAddDomainHandler = new View.OnClickListener() {
+        public void onClick(View v) {
+            // it was the 1st button
+            nextActivity(CreateDomainActivity.class, user);
+        }
+    };
 
     public void cancelAlarm(View view) {
         if (alarmManager != null) {
@@ -210,17 +219,14 @@ public class MainActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-
             @Override
-            public void onItemClick(AdapterView<?> adapter,View v, int position, long id){
-            Domain domain = (Domain) adapter.getItemAtPosition(position);
-            Intent intent = new Intent(getBaseContext(), CategoryItemActivity.class);
-            intent.putExtra("user", user);
-            intent.putExtra("domain", domain);
-            startActivity(intent);
+            public void onItemClick(AdapterView<?> adapter,View v, int position, long id) {
+                Domain domain = (Domain) adapter.getItemAtPosition(position);
+                Intent intent = new Intent(getBaseContext(), CategoryItemActivity.class);
+                intent.putExtra("user", user);
+                intent.putExtra("domain", domain);
+                startActivity(intent);
             }
-
-
         });
     }
 
