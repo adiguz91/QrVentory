@@ -58,7 +58,7 @@ public class EventListActivity extends AppCompatActivity implements VolleyRespon
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
                 Event event = (Event) adapter.getItemAtPosition(position);
-                nextActivity(EventSingleActivity.class, event);
+                nextActivity(TabbedEventSingleActivity.class, event);
             }
         });
     }

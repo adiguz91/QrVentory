@@ -56,7 +56,6 @@ public class NotificationAlarmServiceActivity extends Service implements VolleyR
         JodaTimeAndroid.init(this);
 
 
-
         /*events = new ArrayList<Event>();
         event = new Event();
 
@@ -121,13 +120,14 @@ public class NotificationAlarmServiceActivity extends Service implements VolleyR
             user = intent.getParcelableExtra("user");
             //String test = user.getFirstname();
 
-            mManager = (NotificationManager) this.getApplicationContext().getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
-            Intent intent1 = new Intent(this.getApplicationContext(), MainActivity.class);
+            /*mManager = (NotificationManager) this.getApplicationContext().getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
+            Intent intent1 = new Intent(this.getApplicationContext(), TabbedEventSingleActivity.class);
+            intent1.putExtra("user", user);
 
             //Notification notification = new Notification(R.drawable.ic_launcher,"This is a test message!", System.currentTimeMillis());
             intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            pendingNotificationIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            pendingNotificationIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);*/
             //notification.flags |= Notification.FLAG_AUTO_CANCEL;
             //notification.setLatestEventInfo(this.getApplicationContext(), "AlarmManagerDemo", "This is a test message!", pendingNotificationIntent);
 
@@ -204,21 +204,49 @@ public class NotificationAlarmServiceActivity extends Service implements VolleyR
                 Event currentEvent = events.get(count);
 
                 if (currentEvent.getStatus() == 1) {
+                    mManager = (NotificationManager) this.getApplicationContext().getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
+                    Intent intent1 = new Intent(this.getApplicationContext(), TabbedEventSingleActivity.class);
+                    intent1.putExtra("user", user);
+                    intent1.putExtra("event", currentEvent);
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent1.setAction(Long.toString(System.currentTimeMillis()));
+
+                    pendingNotificationIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_ONE_SHOT); //PendingIntent.FLAG_UPDATE_CURRENT
+
                     String startDate = currentEvent.DateToStringParser(currentEvent.getStartDate());
                     String endDate = currentEvent.DateToStringParser(currentEvent.getEndDate());
                     int eid = (int) currentEvent.getId();
 
-                    Period period = printDifference(currentEvent.getStartDate(), currentEvent.getEndDate());
+                    Calendar cal = Calendar.getInstance();
+                    String currentDateString = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .format(cal.getTime());
 
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date currentDate = null;
+                    try {
+                        currentDate = formatter.parse(currentDateString);
+                    } catch(ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    Period period = null;
                     StringBuilder sb = new StringBuilder();
-                    if (period.getDays() != 0) {
-                        sb.append("Days: " + period.getDays() + " ");
+                    try {
+                        period = printDifference(currentDate, currentEvent.getEndDate()); //currentDate
+
+                        sb.append("Event will expire in ");
+                        if (period.getDays() != 0) {
+                            sb.append("Days: " + period.getDays() + " ");
+                        }
+                        sb.append("Hours: " + period.getHours() + " ");
+                        if (period.getDays() == 0) {
+                            sb.append("Minutes: " + period.getMinutes() + " ");
+                        }
+
+                    } catch (IllegalArgumentException e) {
+                        sb.append("The event has expired. Check your items.");
                     }
-                    sb.append("Hours: " + period.getHours() + " ");
-                    if (period.getDays() == 0) {
-                        sb.append("Minutes: " + period.getMinutes() + " ");
-                    }
-                    sb.append("Time Left."); //or too much
+
                     String timeDiff = sb.toString();
 
                     Notification.Builder builder = new Notification.Builder(NotificationAlarmServiceActivity.this);
@@ -232,7 +260,48 @@ public class NotificationAlarmServiceActivity extends Service implements VolleyR
                     notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
                     mManager.notify(eid, notification);
-                } //else if starthilfe
+                } else if (currentEvent.getStatus() == 0) {
+                    Calendar cal = Calendar.getInstance();
+                    String currentDateString = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .format(cal.getTime());
+
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date currentDate = null;
+                    try {
+                        currentDate = formatter.parse(currentDateString);
+                    } catch(ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        Period period = printDifference(currentEvent.getStartDate(), currentDate);
+
+                        String message = "Event is overdue. Click here for starting.";
+
+                        mManager = (NotificationManager) this.getApplicationContext().getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
+                        Intent intent1 = new Intent(this.getApplicationContext(), TabbedEventSingleActivity.class);
+                        intent1.putExtra("user", user);
+                        intent1.putExtra("event", currentEvent);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent1.setAction(Long.toString(System.currentTimeMillis()));
+
+                        pendingNotificationIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_ONE_SHOT); //PendingInte
+
+                        Notification.Builder builder = new Notification.Builder(NotificationAlarmServiceActivity.this);
+                        builder.setSmallIcon(android.R.drawable.stat_sys_download) //android.R.drawable.stat_sys_download
+                                .setContentTitle(currentEvent.getName()) //timeDiff + "\n" + currentEvent.getName() + "\n" + startDate + "\n" + endDate
+                                .setContentIntent(pendingNotificationIntent)
+                                .setContentText(message);
+
+                        Notification notification = builder.getNotification();
+                        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                        int eid = (int) currentEvent.getId();
+                        mManager.notify(eid, notification);
+                    } catch(IllegalArgumentException e) {
+                        //do nothing
+                    }
+                }
             }
         }
 

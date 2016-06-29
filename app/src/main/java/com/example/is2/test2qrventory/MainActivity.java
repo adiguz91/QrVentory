@@ -184,17 +184,17 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
             nextActivity(EventListActivity.class, user); //EventListActivity
-        } else if (id == R.id.nav_printer) {
+        } /*else if (id == R.id.nav_printer) {
             nextActivity(PrintActivity.class);
-        } else if (id == R.id.nav_scanner) {
+        } */else if (id == R.id.nav_scanner) {
             nextActivity(ScanActivity.class);
-        } else if (id == R.id.nav_settings) {
+        } /*else if (id == R.id.nav_settings) {
             nextActivity(SettingsActivity.class);
-        } else if (id == R.id.nav_share) {
+        } */else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
+        } /*else if (id == R.id.nav_send) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -88,7 +88,7 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
 
     private void setupViewPager(ViewPager viewPager) {
         mSectionsPagerAdapter.addFragment(new OpenEventsFragment(), "Open Events");
-        mSectionsPagerAdapter.addFragment(new ClosedEventsFragment(), "Closed Events");
+        mSectionsPagerAdapter.addFragment(new ClosedEventsFragment(), "Running Events");
         mSectionsPagerAdapter.addFragment(new FinishedEventFragment(), "Finished Events");
         mViewPager.setAdapter(mSectionsPagerAdapter);
     }

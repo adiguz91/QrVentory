@@ -10,18 +10,18 @@
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Event" />
-        <item
+        <!--<item
             android:id="@+id/nav_printer"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Printer" />
+            android:title="Printer" />-->
         <item
             android:id="@+id/nav_scanner"
             android:icon="@drawable/ic_menu_camera"
             android:title="Scanner" />
-        <item
+        <!--<item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_240db"
-            android:title="Settings" />
+            android:title="Settings" />-->
     </group>
 
     <item android:title="Communicate">
