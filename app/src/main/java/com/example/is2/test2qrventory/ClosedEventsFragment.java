@@ -79,7 +79,7 @@ public class ClosedEventsFragment extends Fragment implements VolleyResponseList
         long domain_id = 1;
         String userApiKey = user.getApiKey();
         EventAccess eventAccess = new EventAccess(userApiKey);
-        eventAccess.getEvents(this, domain_id);
+        eventAccess.getEventsFromDomain(this, domain_id);
     }
 
     @Override
