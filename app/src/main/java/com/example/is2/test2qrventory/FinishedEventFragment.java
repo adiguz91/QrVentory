@@ -79,10 +79,8 @@ public class FinishedEventFragment extends Fragment implements VolleyResponseLis
 
         user = getActivity().getIntent().getParcelableExtra("user");
         domain = getActivity().getIntent().getParcelableExtra("domain");
-        long domain_id = domain.getIdDomain();
-        String userApiKey = user.getApiKey();
-        EventAccess eventAccess = new EventAccess(userApiKey);
-        eventAccess.getEvents(this, domain_id);
+        EventAccess eventAccess = new EventAccess(user.getApiKey());
+        eventAccess.getEventsFromDomain(this, domain.getIdDomain());
     }
 
     @Override

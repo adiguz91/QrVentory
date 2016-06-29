@@ -50,10 +50,8 @@ public class EventListActivity extends AppCompatActivity implements VolleyRespon
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        long domain_id = 1;
-        String userApiKey = user.getApiKey();
-        EventAccess eventAccess = new EventAccess(userApiKey);
-        eventAccess.getEvents(this, domain_id);
+        EventAccess eventAccess = new EventAccess(user.getApiKey());
+        eventAccess.getAllEvents(this);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
