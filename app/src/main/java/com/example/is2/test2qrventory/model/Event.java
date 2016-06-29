@@ -31,6 +31,7 @@ public class Event implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(Id);
+        dest.writeLong(IdDomain);
         dest.writeString(Name);
         dest.writeLong((StartDate != null) ? StartDate.getTime() : 0);
         dest.writeLong((EndDate != null) ? EndDate.getTime() : 0);
@@ -47,6 +48,7 @@ public class Event implements Parcelable {
      **/
     private Event(Parcel in){
         this.Id = in.readLong();
+        this.IdDomain = in.readLong();
         this.Name = in.readString();
         this.StartDate = new Date(in.readLong());
         this.EndDate = new Date(in.readLong());
@@ -72,6 +74,7 @@ public class Event implements Parcelable {
     // --------------------------
 
     private long Id;
+    private long IdDomain;
     private String Name;
     private String Description;
     private Date StartDate;
@@ -79,6 +82,14 @@ public class Event implements Parcelable {
     private String ImageURL;
     private int Status; // 0=inaktive, 1=started, 2=finished
     private boolean AutoStart;
+
+    public long getIdDomain() {
+        return IdDomain;
+    }
+
+    public void setIdDomain(long idDomain) {
+        IdDomain = idDomain;
+    }
 
     public int getStatus() {
         return Status;

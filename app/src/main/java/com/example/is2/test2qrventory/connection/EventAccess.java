@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class EventAccess {
 
-    private String url ="http://qrventory.square7.ch/v1/event/";
+    private String url ="http://qrventory.square7.ch/v1/event";
     private String userApiKey;
     private List<Event> events = new ArrayList<>();
 
@@ -42,12 +42,51 @@ public class EventAccess {
         this.userApiKey = userApiKey;
     }
 
-    public void getEvents(final VolleyResponseListener listener, long domain_id) {
+    public void getEventsFromDomain(final VolleyResponseListener listener, long domain_id) {
 
-        String request_url = url + domain_id;
+        String request_url = url + "/" + domain_id;
 
         // Request a string response from the provided URL.
         StringRequest getRootCategoryRequest = new StringRequest(Request.Method.GET, request_url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        events = handleEventsResponse(response);
+                        listener.onResponse(events);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onError(error.toString());
+                    }
+                }) {
+
+            /*@Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("email", user.getEmail());
+                params.put("password", user.getPassword());
+                return params;
+            }*/
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("X-Authorization", userApiKey);
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(getRootCategoryRequest);
+    }
+
+    public void getAllEvents(final VolleyResponseListener listener) {
+
+        // Request a string response from the provided URL.
+        StringRequest getRootCategoryRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -106,6 +145,7 @@ public class EventAccess {
                 for (int i = 0; i < events_response.length(); i++) {
                     event = new Event();
                     event.setId(events_response.getJSONObject(i).getLong("IdEvent"));
+                    event.setIdDomain(events_response.getJSONObject(i).getLong("Domain_IdDomain"));
                     event.setName(events_response.getJSONObject(i).getString("Name"));
                     event.setDescription(events_response.getJSONObject(i).getString("Description"));
                     event.setImageURL(events_response.getJSONObject(i).getString("Image"));

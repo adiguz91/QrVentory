@@ -31,7 +31,7 @@ import java.util.Map;
 public class ItemAccess {
 
     private String url ="http://qrventory.square7.ch/v1/item/";
-    private String url_items ="http://qrventory.square7.ch/v1/items/";
+    private String url_items ="http://qrventory.square7.ch/v1/event-items/";
     private String userApiKey;
     private Item item;
 
@@ -103,47 +103,17 @@ public class ItemAccess {
         AppController.getInstance().addToRequestQueue(getItemRequest);
     }
 
-    public void getItemsFromDomain(final VolleyResponseListener listener, long domain_id) {
-
-        String url = url_items+domain_id;
+    public void getEventItemsThatExists(final VolleyResponseListener listener, long domain_id, long event_id) {
+        int exists = 1; // true
+        String url = url_items + domain_id + "/" + event_id + "/" + exists;
 
         // Request a string response from the provided URL.
         StringRequest getItemRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Log.d("DEBUG", response);
-
-                        JSONObject response_json = null;
-                        try {
-                            response_json = new JSONObject(response);
-                            boolean isError = response_json.getBoolean("error");
-
-                            if(!isError) {
-                                JSONArray items = response_json.getJSONArray("Items");
-                                List<Item> item_list = new ArrayList<>();
-
-                                Item item = null;
-                                for (int i = 0; i < items.length(); i++) {
-                                    item = new Item();
-                                    item.setId(items.getJSONObject(i).getLong("IdItem"));
-                                    item.setName(items.getJSONObject(i).getString("Name"));
-                                    item.setDescription(items.getJSONObject(i).getString("Description"));
-                                    item.setBarcodeURL(items.getJSONObject(i).getString("Barcode"));
-                                    item.setQRcodeURL(items.getJSONObject(i).getString("QRcode"));
-                                    item.setImageURL(items.getJSONObject(i).getString("Image"));
-                                    item.setIsQR((items.getJSONObject(i).getInt("IsQR") == 1) ? true : false);
-                                    item_list.add(item);
-                                }
-                                    //byte[] decodedString = Base64.decode(json_response.getString("image"), Base64.DEFAULT);
-                                    //Bitmap bitmap_decoded = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                    //user.setImage(bitmap_decoded);
-
-                                    listener.onResponse(item_list);
-                                }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        List<Item> item_list = handleGetItems(response);
+                        listener.onResponse(item_list);
                     }
                 },
                 new Response.ErrorListener() {
@@ -175,6 +145,37 @@ public class ItemAccess {
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(getItemRequest);
+    }
+
+    private List<Item> handleGetItems(String response) {
+        List<Item> item_list = null;
+        try {
+            JSONObject response_json = null;
+            response_json = new JSONObject(response);
+            boolean isError = response_json.getBoolean("error");
+
+            if(!isError) {
+                JSONArray items = response_json.getJSONArray("Items");
+                item_list = new ArrayList<>();
+
+                Item item = null;
+                for (int i = 0; i < items.length(); i++) {
+                    item = new Item();
+                    item.setId(items.getJSONObject(i).getLong("IdItem"));
+                    item.setName(items.getJSONObject(i).getString("Name"));
+                    item.setDescription(items.getJSONObject(i).getString("Description"));
+                    item.setBarcodeURL(items.getJSONObject(i).getString("Barcode"));
+                    item.setQRcodeURL(items.getJSONObject(i).getString("QRcode"));
+                    item.setImageURL(items.getJSONObject(i).getString("Image"));
+                    item.setIsQR((items.getJSONObject(i).getInt("IsQR") == 1) ? true : false);
+                    item_list.add(item);
+                }
+            }
+        } catch (JSONException e) {
+            item_list = null;
+            e.printStackTrace();
+        }
+        return item_list;
     }
 
 }
