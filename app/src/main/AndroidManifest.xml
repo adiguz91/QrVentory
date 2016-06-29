@@ -153,7 +153,8 @@
         <activity
             android:name=".CreateDomainActivity"
             android:label="Create Domain" />
-        <activity android:name=".CreateCategoryActivity"></activity>
+        <activity android:name=".CreateCategoryActivity" />
+        <activity android:name=".CreateItemActivity"></activity>
     </application>
 
 </manifest>
