@@ -90,10 +90,10 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
 
         // Fetching data from a parcelable object passed from LoginActivity
         user = getIntent().getParcelableExtra("user");
-        long domain_id = 1;
+        /*long domain_id = 1;
         String userApiKey = user.getApiKey();
         EventAccess eventAccess = new EventAccess(userApiKey);
-        eventAccess.getEvents(this, domain_id);
+        eventAccess.getEvents(this, domain_id);*/
 
     }
 

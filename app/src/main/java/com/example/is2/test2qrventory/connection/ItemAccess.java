@@ -151,6 +151,50 @@ public class ItemAccess {
         AppController.getInstance().addToRequestQueue(getItemRequest);
     }
 
+    public void getEventItemsThatNotExists(final VolleyResponseListener listener, long domain_id, long event_id) {
+        int exists = 0; // false
+        String url = url_items + domain_id + "/" + event_id + "/" + exists;
+
+        // Request a string response from the provided URL.
+        StringRequest getItemRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        List<Item> item_list = handleGetItems(response);
+                        listener.onResponse(item_list);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //textViewResponse = (TextView) findViewById(R.id.textViewResponse);
+                        //textViewResponse.setText("That didn't work!");
+                        listener.onError(error.toString());
+                    }
+                }){
+            /*@Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("email", user.getEmail());
+                params.put("password", user.getPassword());
+                return params;
+            }*/
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("X-Authorization", userApiKey);
+                return params;
+            }
+        };
+
+        // Add the request to the RequestQueue.
+        //MainActivity.getInstance().getRequestQueue().add(stringRequest);
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(getItemRequest);
+    }
+
     private List<Item> handleGetItems(String response) {
         List<Item> item_list = null;
         try {

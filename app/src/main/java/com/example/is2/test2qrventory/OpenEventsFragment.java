@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.is2.test2qrventory.connection.EventAccess;
+import com.example.is2.test2qrventory.connection.ItemAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.User;
@@ -81,10 +82,9 @@ public class OpenEventsFragment extends Fragment implements VolleyResponseListen
 
         user = getActivity().getIntent().getParcelableExtra("user");
         long domain_id = 1;
-        String userApiKey = user.getApiKey();
-        EventAccess eventAccess = new EventAccess(userApiKey);
-        eventAccess.getEvents(this, domain_id);
-
+        long event_id = 1;
+        ItemAccess itemAccess = new ItemAccess(user.getApiKey());
+        itemAccess.getEventItemsThatNotExists(this, domain_id, event_id);
     }
 
     @Override

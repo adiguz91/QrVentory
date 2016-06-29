@@ -131,64 +131,11 @@ public class NotificationAlarmServiceActivity extends Service implements VolleyR
             //notification.flags |= Notification.FLAG_AUTO_CANCEL;
             //notification.setLatestEventInfo(this.getApplicationContext(), "AlarmManagerDemo", "This is a test message!", pendingNotificationIntent);
 
-            long domain_id = 1;
-            String userApiKey = user.getApiKey();
-            EventAccess eventAccess = new EventAccess(userApiKey);
-            eventAccess.getEvents(this, domain_id);
+            EventAccess eventAccess = new EventAccess(user.getApiKey());
+            eventAccess.getAllEvents(this);
         } catch(Exception e) {
             e.printStackTrace();
         }
-
-
-        /*for (int count = 0; count < events.size(); count++) {
-            Event currentEvent = events.get(count);
-            String startDate = currentEvent.DateToStringParser(currentEvent.getStartDate());
-            String endDate = currentEvent.DateToStringParser(currentEvent.getEndDate());
-            int eid = (int) currentEvent.getId();
-
-            Period period = printDifference(currentEvent.getStartDate(), currentEvent.getEndDate());
-
-            StringBuilder sb = new StringBuilder();
-            if (period.getDays() != 0) {
-                sb.append("Days: " + period.getDays() + " ");
-            }
-            sb.append("Hours: " + period.getHours() + " ");
-            if (period.getDays() == 0) {
-                sb.append("Minutes: " + period.getMinutes() + " ");
-            }
-            sb.append("Time Left."); //or too much
-            String timeDiff = sb.toString();
-
-            Notification.Builder builder = new Notification.Builder(NotificationAlarmServiceActivity.this);
-            builder.setSmallIcon(android.R.drawable.stat_sys_download) //android.R.drawable.stat_sys_download
-                    .setContentTitle(currentEvent.getName()) //timeDiff + "\n" + currentEvent.getName() + "\n" + startDate + "\n" + endDate
-                    .setContentIntent(pendingNotificationIntent)
-                    .setContentText(timeDiff);
-                    //.setStyle(new Notification.BigTextStyle().bigText(timeDiff));
-
-            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-            inboxStyle.setBigContentTitle(currentEvent.getName());
-            inboxStyle.addLine(timeDiff);
-            inboxStyle.addLine(startDate);
-            inboxStyle.addLine((endDate));
-
-            builder.setStyle(inboxStyle);
-
-            Notification notification = builder.getNotification();
-            notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-            mManager.notify(eid, notification);
-        }*/
-
-        /*Notification.Builder builder = new Notification.Builder(NotificationAlarmServiceActivity.this);
-        builder.setSmallIcon(android.R.drawable.stat_sys_download) //android.R.drawable.stat_sys_download
-                .setContentTitle("ContentTitle")
-                .setContentIntent(pendingNotificationIntent);
-
-        Notification notification = builder.getNotification();
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        mManager.notify(0, notification);*/
     }
 
     public Period printDifference(Date startDate, Date endDate){

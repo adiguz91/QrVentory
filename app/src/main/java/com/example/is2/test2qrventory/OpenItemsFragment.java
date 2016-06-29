@@ -75,9 +75,10 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
 
         user = getActivity().getIntent().getParcelableExtra("user");
         long domain_id = 1;
+        long event_id = 1;
         String userApiKey = user.getApiKey();
         ItemAccess itemAccess = new ItemAccess(userApiKey);
-        itemAccess.getItemsFromDomain(this, domain_id);
+        itemAccess.getEventItemsThatNotExists(this, domain_id, event_id);
     }
 
     @Override
