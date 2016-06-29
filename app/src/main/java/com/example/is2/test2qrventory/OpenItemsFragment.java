@@ -46,7 +46,6 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
     private CustomItemListAdapter adapter;
     Event event = null;
 
-
     public OpenItemsFragment() {
         // Required empty public constructor
     }
@@ -102,7 +101,13 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
                                     int position, long id) {
 
                 Item item = (Item) adapter.getItemAtPosition(position);
-                nextActivity(ItemActivity.class, item);
+                //nextActivity(ItemActivity.class, item);
+
+                Intent intent = new Intent(getActivity().getBaseContext(), ItemActivity.class);
+                intent.putExtra("user", user);
+                intent.putExtra("item", item);
+                intent.putExtra("event", event);
+                startActivity(intent);
             }
         });
 

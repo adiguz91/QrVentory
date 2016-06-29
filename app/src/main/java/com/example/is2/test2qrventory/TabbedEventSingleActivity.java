@@ -47,10 +47,12 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
     private ViewPager mViewPager;
     private TabLayout tabLayout;
 
-    private com.github.clans.fab.FloatingActionButton fab_scan_items;
-    private static final int REQUEST_ACTIVITY_SCAN_ITEMS = 1; //new
-    String scannedItemId;
     Event event = null;
+    private com.github.clans.fab.FloatingActionButton fab_scan_items;
+    private static final int REQUEST_ACTIVITY_SCAN_ITEMS = 1;
+    String itemId;
+    String eventId;
+    int codeType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +105,25 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
                 if (resultCode == RESULT_OK) {
                     Bundle extras = data.getExtras();
                     if (extras != null) {
-                        scannedItemId = extras.getString("scannedItemId");
+                        String concatenatedCode = extras.getString("data");
+                        codeType = extras.getInt("type");
+                        if (codeType == 8) {
+                            String concatenatedCodeWithoutLastDigit = concatenatedCode.substring(0, concatenatedCode.length() - 1);
+                            String scannedEventId = concatenatedCodeWithoutLastDigit.substring(0, Math.min(concatenatedCodeWithoutLastDigit.length(), 3));
+                            eventId = Integer.valueOf(scannedEventId).toString();
+                            String scannedItemId = concatenatedCodeWithoutLastDigit.substring(concatenatedCodeWithoutLastDigit.length() - 4);
+                            itemId = Integer.valueOf(scannedItemId).toString();
+                        } else if (codeType == 13) {
+                            String concatenatedCodeWithoutLastDigit = concatenatedCode.substring(0, concatenatedCode.length() - 1);
+                            String scannedEventId = concatenatedCodeWithoutLastDigit.substring(0, Math.min(concatenatedCodeWithoutLastDigit.length(), 5));
+                            eventId = Integer.valueOf(scannedEventId).toString();
+                            String scannedItemId = concatenatedCodeWithoutLastDigit.substring(concatenatedCodeWithoutLastDigit.length() - 7);
+                            itemId = Integer.valueOf(scannedItemId).toString();
+                        } else if (codeType == 64) {
+                            String[] separatedIds = concatenatedCode.split(",");
+                            eventId = separatedIds[0];
+                            itemId = separatedIds[1];
+                        }
                     }
                 }
                 break;
@@ -111,7 +131,6 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
                 break;
         }
     }
-
 
     @Override
     public void onEventInfoFragmentInteraction(Uri uri) {

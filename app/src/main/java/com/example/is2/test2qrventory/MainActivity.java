@@ -143,6 +143,8 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        nextActivity(SettingsActivity.class);
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-            nextActivity(EventSingleActivity.class, user); //EventListActivity
+            nextActivity(EventListActivity.class, user); //EventListActivity
         } else if (id == R.id.nav_printer) {
             nextActivity(PrintActivity.class);
         } else if (id == R.id.nav_scanner) {

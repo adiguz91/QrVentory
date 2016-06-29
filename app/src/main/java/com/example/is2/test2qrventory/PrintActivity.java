@@ -53,6 +53,7 @@ import com.epson.lwprint.sdk.LWPrintDiscoverPrinter;
 import com.epson.lwprint.sdk.LWPrintDataProvider;
 import com.epson.lwprint.sdk.LWPrintPrintingPhase;
 import com.epson.lwprint.sdk.LWPrintCallback;
+import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.Item;
 import com.example.is2.test2qrventory.model.User;
 import com.example.is2.test2qrventory.printer.LWPrintSampleUtil;
@@ -111,6 +112,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 
 	User user = null;
 	Item singleItem = null;
+	Event associatedEvent = null;
 
 	android.os.Handler handler = new android.os.Handler();
 	/**
@@ -182,6 +184,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 			}
 		});
 
+		associatedEvent = getIntent().getParcelableExtra("event");
 		user = getIntent().getParcelableExtra("user");
 		singleItem = getIntent().getParcelableExtra("item");
 		editTextInputData.setText(singleItem.getName());
@@ -505,21 +508,27 @@ public class PrintActivity extends Activity implements OnClickListener {
 				if (_formNames.get(_jobNumber).equals("QRCode")) {
 					sampleDataProvider.setFormName(_formNames.get(_jobNumber) + SUFFIX);
 					int itemID = (int) singleItem.getId();
-					sampleDataProvider.setQrCodeData(Integer.toString(itemID)); //set Item Identifier for QRCode Print
+					int eventID = (int) associatedEvent.getId();
+					String concatenatedCode = Integer.toString(eventID) + "," + Integer.toString(itemID);
+					sampleDataProvider.setQrCodeData(concatenatedCode); //set Item Identifier for QRCode Print
 				} else if (_formNames.get(_jobNumber).equals("Barcode")) {
 					sampleDataProvider.setFormName(_formNames.get(_jobNumber) + SUFFIX);
 					int itemID = (int) singleItem.getId();
-					String itemIDString = Integer.toString(itemID);
-					String barcodeType = sampleDataProvider.getBarcodeType();
+					int eventID = (int) associatedEvent.getId();
 
-					String itemIDPadded = null;
+					String barcodeType = sampleDataProvider.getBarcodeType();
+					String concatenatedCode = null;
 					if ("Code-EAN8".equals(barcodeType)) {
-						itemIDPadded = rightPadZeros(itemIDString, 7);
+						String itemIDPadded = String.format("%04d", itemID);
+						String eventIDPadded = String.format("%03d", eventID);
+						concatenatedCode = eventIDPadded + itemIDPadded;
 					} else if ("Code-EAN13".equals(barcodeType)) {
-						itemIDPadded = rightPadZeros(itemIDString, 12);
+						String itemIDPadded = String.format("%07d", itemID);
+						String eventIDPadded = String.format("%05d", eventID);
+						concatenatedCode = eventIDPadded + itemIDPadded;
 					}
 
-					sampleDataProvider.setBarcodeData(itemIDPadded); //set Item Identifier for Barcode Print
+					sampleDataProvider.setBarcodeData(concatenatedCode); //set Item Identifier for Barcode Print
 				} else if (_formNames.get(_jobNumber).equals("String")) {
 					sampleDataProvider.setFormName("String" + SUFFIX);
 				}

@@ -4,6 +4,7 @@ import com.example.is2.test2qrventory.printer.*;
 import com.example.is2.test2qrventory.scanner.CameraPreview;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
@@ -200,18 +201,26 @@ public class ScanActivity extends Activity {
                     scanText.setText("barcode result " + sym.getData());
                     barcodeScanned = true;
 
-                    sampleDataProvider.setQrCodeData(sym.getData());
+                    //sampleDataProvider.setQrCodeData(sym.getData());
                     int form_type = sym.getType();
-                    if (form_type == 64) {
+                    String content = sym.getData();
+                    /*if (form_type == 64) {
                         //sampleDataProvider.setFormType(PrintActivity.FormType.QRCode);
-                        sampleDataProvider.setFormName("QRCode");
+                        //sampleDataProvider.setFormName("QRCode");
                     } else if (form_type == 8){
                         //sampleDataProvider.setFormType(PrintActivity.FormType.Barcode);
-                        sampleDataProvider.setFormName("Barcode");
+                        //sampleDataProvider.setFormName("Barcode");
                     } else {
                         //sampleDataProvider.setFormType(PrintActivity.FormType.String);
-                        sampleDataProvider.setFormName("String");
-                    }
+                        //sampleDataProvider.setFormName("String");
+                    }*/
+
+                    Intent intent = getIntent();
+                    intent.putExtra("data", content);
+                    intent.putExtra("type", form_type);
+
+                    setResult(RESULT_OK, intent);
+                    finish();
 
                 }
             }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.epson.lwprint.sdk.nsd.dns.DNSRecord;
 import com.example.is2.test2qrventory.connection.CategoryAccess;
+import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.Item;
 import com.example.is2.test2qrventory.model.User;
 import com.github.clans.fab.FloatingActionButton;
@@ -17,7 +18,8 @@ import com.github.clans.fab.FloatingActionButton;
 public class ItemActivity extends AppCompatActivity {
 
     private User user;
-    private Item single_item;
+    private Item singleItem;
+    private Event associatedEvent;
     private TextView textViewTitle;
     private TextView textViewDescription;
 
@@ -46,10 +48,11 @@ public class ItemActivity extends AppCompatActivity {
 
         // Fetching data from a parcelable object passed from CategoryItemActivity
         user = getIntent().getParcelableExtra("user");
-        single_item = getIntent().getParcelableExtra("item");
+        singleItem = getIntent().getParcelableExtra("item");
+        associatedEvent = getIntent().getParcelableExtra("event"); //new
 
-        textViewTitle.setText(single_item.getName());
-        textViewDescription.setText(single_item.getDescription());
+        textViewTitle.setText(singleItem.getName());
+        textViewDescription.setText(singleItem.getDescription());
     }
 
     View.OnClickListener onDeleteHandler = new View.OnClickListener() {
@@ -67,7 +70,13 @@ public class ItemActivity extends AppCompatActivity {
 
     View.OnClickListener onPrintHandler = new View.OnClickListener() {
         public void onClick(View v) {
-            nextActivity(PrintActivity.class, single_item);
+            //nextActivity(PrintActivity.class, singleItem);
+            Intent intent = new Intent(getBaseContext(), PrintActivity.class); //ItemActivity.class
+            intent.putExtra("user", user);
+            intent.putExtra("item", singleItem);
+            intent.putExtra("event", associatedEvent);
+
+            startActivity(intent);
         }
     };
 
