@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.Item;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
     private com.github.clans.fab.FloatingActionButton fab_scan_items;
     private static final int REQUEST_ACTIVITY_SCAN_ITEMS = 1; //new
     String scannedItemId;
+    Event event = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

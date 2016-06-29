@@ -31,7 +31,7 @@ import com.example.is2.test2qrventory.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabbedEventsActivity extends AppCompatActivity implements ClosedEventsFragment.OnFragmentInteractionListener, OpenEventsFragment.OnFragmentInteractionListener, FinishedEventFragment.OnFragmentInteractionListener, VolleyResponseListener {
+public class TabbedEventsActivity extends AppCompatActivity implements ClosedEventsFragment.OnFragmentInteractionListener, OpenEventsFragment.OnFragmentInteractionListener, FinishedEventFragment.OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -84,18 +84,6 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        pDialog = new ProgressDialog(this);
-        // Showing progress dialog before making http request
-        pDialog.setMessage("Loading...");
-        pDialog.show();
-
-        // Fetching data from a parcelable object passed from LoginActivity
-        user = getIntent().getParcelableExtra("user");
-        long domain_id = 1;
-        String userApiKey = user.getApiKey();
-        EventAccess eventAccess = new EventAccess(userApiKey);
-        eventAccess.getEvents(this, domain_id);
-
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -144,38 +132,9 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
     }
 
     @Override
-    public void onError(String message) {
-
-    }
-
-    @Override
-    public void onResponse(Object response) {
-        if(response != null)
-        {
-            hidePDialog();
-
-            events.clear();
-            events.addAll((List<Event>) response);
-
-            // notifying list adapter about data changes
-            // so that it renders the list view with updated data
-           // adapter.notifyDataSetChanged();
-        }
-    }
-
-    private void hidePDialog() {
-        if (pDialog != null) {
-            pDialog.dismiss();
-            pDialog = null;
-        }
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
-        hidePDialog();
     }
-
 
     /**
      * A placeholder fragment containing a simple view.

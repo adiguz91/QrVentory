@@ -1,12 +1,24 @@
 package com.example.is2.test2qrventory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.example.is2.test2qrventory.connection.ItemAccess;
+import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Event;
+import com.example.is2.test2qrventory.model.Item;
+import com.example.is2.test2qrventory.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -17,7 +29,7 @@ import android.view.ViewGroup;
  * Use the {@link ClosedItemsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ClosedItemsFragment extends Fragment {
+public class ClosedItemsFragment extends Fragment implements VolleyResponseListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +40,11 @@ public class ClosedItemsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    User user = null;
+    Event event = null;
+    List<Item> items = new ArrayList<>();
+    private CustomItemListAdapter adapter;
+    ListView listViewClosedItems;
 
     public ClosedItemsFragment() {
         // Required empty public constructor
@@ -58,13 +75,48 @@ public class ClosedItemsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        event = getActivity().getIntent().getParcelableExtra("event");
+        user = getActivity().getIntent().getParcelableExtra("user");
+        String userApiKey = user.getApiKey();
+        ItemAccess itemAccess = new ItemAccess(userApiKey);
+        itemAccess.getEventItemsThatExists(this, event.getIdDomain(), event.getId());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_closed_items, container, false);
+
+        View rootView = inflater.inflate(R.layout.fragment_closed_items, container, false);
+
+        listViewClosedItems = (ListView) rootView.findViewById(R.id.list_view_closed_items);
+
+        adapter = new CustomItemListAdapter((TabbedEventSingleActivity) getActivity(), items); // category.getSubcategories()
+
+        listViewClosedItems.setAdapter(adapter);
+
+        listViewClosedItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> adapter, View view,
+                                    int position, long id) {
+
+                Item item = (Item) adapter.getItemAtPosition(position);
+                nextActivity(ItemActivity.class, item);
+            }
+        });
+
+        return rootView;
+    }
+
+    private void nextActivity(Class activity_class, Object object) {
+        Intent intent = new Intent(getActivity().getBaseContext(), activity_class); //ItemActivity.class
+        //based on item add info to intent
+        intent.putExtra("user", user);
+
+        if(object.getClass() == Item.class)
+            intent.putExtra("item", (Item) object);
+
+        startActivity(intent);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -89,6 +141,29 @@ public class ClosedItemsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onError(String message) {
+
+    }
+
+    @Override
+    public void onResponse(Object response) {
+        if(response != null)
+        {
+            items.clear();
+            items.addAll((List<Item>) response);
+
+            /*for (int item_count = 0; item_count < ((List<Item>) response).size(); item_count++) {
+                Item item = ((List<Item>) response).get(item_count);
+                items.add(item);
+            }*/
+
+            // notifying list adapter about data changes
+            // so that it renders the list view with updated data
+            adapter.notifyDataSetChanged();
+        }
     }
 
     /**

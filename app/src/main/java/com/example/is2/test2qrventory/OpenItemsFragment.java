@@ -44,6 +44,7 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
     User user = null;
     ListView listViewOpenItems = null;
     private CustomItemListAdapter adapter;
+    Event event = null;
 
 
     public OpenItemsFragment() {
@@ -76,12 +77,11 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        event = getActivity().getIntent().getParcelableExtra("event");
         user = getActivity().getIntent().getParcelableExtra("user");
-        long domain_id = 1;
-        long event_id = 1;
         String userApiKey = user.getApiKey();
         ItemAccess itemAccess = new ItemAccess(userApiKey);
-        itemAccess.getEventItemsThatNotExists(this, domain_id, event_id);
+        itemAccess.getEventItemsThatNotExists(this, event.getIdDomain(), event.getId());
     }
 
     @Override
@@ -154,12 +154,12 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
         if(response != null)
         {
             items.clear();
-            //events.addAll((List<Event>) response);
+            items.addAll((List<Item>) response);
 
-            for (int item_count = 0; item_count < ((List<Item>) response).size(); item_count++) {
+            /*for (int item_count = 0; item_count < ((List<Item>) response).size(); item_count++) {
                 Item item = ((List<Item>) response).get(item_count);
                 items.add(item);
-            }
+            }*/
 
             // notifying list adapter about data changes
             // so that it renders the list view with updated data
