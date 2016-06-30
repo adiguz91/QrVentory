@@ -37,6 +37,7 @@ import java.util.Map;
 public class EventAccess {
 
     private String url ="http://qrventory.square7.ch/v1/event";
+    private String url_event_status = "http://qrventory.square7.ch/v1/event-status";
     private String userApiKey;
     private List<Event> events = new ArrayList<>();
     private String event_json_body;
@@ -135,6 +136,50 @@ public class EventAccess {
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(getRootCategoryRequest);
+    }
+
+    public void updateEventStatus(final VolleyResponseListener listener, long event_id, int status) {
+
+        String url_new = url_event_status + "/" + event_id + "/" + status;
+
+        // Request a string response from the provided URL.
+        StringRequest updateEventStatusRequest = new StringRequest(Request.Method.GET, url_new,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        boolean result = false;
+                        try {
+                            JSONObject json_response = new JSONObject(response);
+                            boolean isError = json_response.getBoolean("error");
+
+                            if(!isError) {
+                                result = true;
+                            }
+
+                        } catch (JSONException e) {
+                            result = false;
+                            e.printStackTrace();
+                        }
+                        listener.onResponse(result);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onError(error.toString());
+                    }
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("X-Authorization", userApiKey);
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(updateEventStatusRequest);
     }
 
     public void getAllEvents(final VolleyResponseListener listener) {
