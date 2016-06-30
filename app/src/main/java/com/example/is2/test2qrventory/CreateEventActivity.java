@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.is2.test2qrventory.connection.EventAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Domain;
 import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.User;
 import com.github.clans.fab.FloatingActionButton;
@@ -53,7 +54,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     //private int year, month, day;
 
     private User user = null;
-    private long domain_id = 0;
+    private Domain domain = null;
     private Event event_to_save = null;
     private Event event_response = null;
 
@@ -88,8 +89,9 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         fab_save.setOnClickListener(onSaveEventHandler);
 
         user = getIntent().getParcelableExtra("user");
+        domain = getIntent().getParcelableExtra("domain");
 
-        domain_id = getIntent().getLongExtra("domain_id", 0);
+        //domain_id = getIntent().getLongExtra("domain_id", 0);
         //category_parent_id = getIntent().getIntExtra("category_parent_id", 0);
 
         loadImage = (Button) findViewById(R.id.buttonLoadImage_event);
@@ -210,7 +212,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         event_to_save.setName(name);
         event_to_save.setDescription(description);
         event_to_save.setAutoStart(false);
-        event_to_save.setIdDomain(domain_id);
+        event_to_save.setIdDomain(domain.getIdDomain());
         event_to_save.setStatus(status);
         event_to_save.setStartDate(event_to_save.StringtoDateParser(start_datetime));
         event_to_save.setEndDate(event_to_save.StringtoDateParser(end_datetime));
@@ -219,7 +221,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             event_to_save.setImageURL(image_upload.toString());
         }
 
-        if(domain_id != 0) {
+        if(domain.getIdDomain() != 0) {
             EventAccess eventAccess = new EventAccess(user.getApiKey());
             eventAccess.addEvent(this, event_to_save);
         }
@@ -272,5 +274,13 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     private void ShowToastMessage(String message) {
         toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getBaseContext(), TabbedEventsActivity.class);
+        intent.putExtra("user", user);
+        intent.putExtra("domain", domain);
+        startActivity(intent);
     }
 }

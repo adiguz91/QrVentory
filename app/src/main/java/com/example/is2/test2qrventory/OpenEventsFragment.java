@@ -88,6 +88,11 @@ public class OpenEventsFragment extends Fragment implements VolleyResponseListen
         String userApiKey = user.getApiKey();
         EventAccess eventAccess = new EventAccess(userApiKey);
         eventAccess.getEventsFromDomain(this, domain_id);
+
+        /*Intent intent = getActivity().getIntent();
+        Bundle extras = intent.getExtras();
+        extras.getStringArrayList()*/
+
     }
 
     @Override
@@ -118,6 +123,8 @@ public class OpenEventsFragment extends Fragment implements VolleyResponseListen
                 startActivity(intent);*/
             }
         });
+
+
 
         // Inflate the layout for this fragment
         return rootView;

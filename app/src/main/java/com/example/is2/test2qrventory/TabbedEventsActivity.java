@@ -96,11 +96,32 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
 
     }
 
+    /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras();
+                    if (extras != null) {
+
+
+                        finish();
+                        startActivity(getIntent());
+                        //itemAccess.getEventItemsThatNotExists(this, event.getIdDomain(), event.getId());
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }*/
+
     View.OnClickListener onAddEventHandler = new View.OnClickListener() {
         public void onClick(View v) {
             Intent intent = new Intent(getBaseContext(), CreateEventActivity.class);
             intent.putExtra("user", user);
-            intent.putExtra("domain_id", domain.getIdDomain());
+            intent.putExtra("domain", domain);
             startActivity(intent);
         }
     };
