@@ -90,7 +90,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 
 	private ArrayList<String> _formNames = null;
 	private Button buttonSelectXml;
-	//private Button buttonDiscoverPrinter;
+	private Button buttonDiscoverPrinter;
 	private Button buttonPrint;
 	private EditText editTextInputData;
 	private TextView textResult;
@@ -155,18 +155,24 @@ public class PrintActivity extends Activity implements OnClickListener {
 
 		sampleDataProvider = new SampleDataProvider(this);
 
+		buttonDiscoverPrinter = (Button) findViewById(R.id.button_discover_printer);
+		buttonDiscoverPrinter.setOnClickListener(this);
+
 		buttonSelectXml = (Button) findViewById(R.id.select_xml_button); //new
 		buttonSelectXml.setOnClickListener(this); //new
 
-		textDiscoverPrinter = (TextView) findViewById(R.id.discover_printer_text_view);
+		//textDiscoverPrinter = (TextView) findViewById(R.id.discover_printer_text_view);
 		if (SettingsActivity.getInstance() != null) {
 			printerInfo = SettingsActivity.getInstance().getPrinterInfo();
 			if (printerInfo != null) {
 				//textDiscoverPrinter = (TextView) findViewById(R.id.discover_printer_text_view);
-				textDiscoverPrinter.setText(getResources().getString(
+				/*textDiscoverPrinter.setText(getResources().getString(
+						R.string.button_search)
+						+ printerInfo.get("name"));*/
+				//buttonDiscoverPrinter.setOnClickListener(this);
+				buttonDiscoverPrinter.setText(getResources().getString(
 						R.string.button_search)
 						+ printerInfo.get("name"));
-				//buttonDiscoverPrinter.setOnClickListener(this);
 			}
 		}
 
@@ -361,10 +367,10 @@ public class PrintActivity extends Activity implements OnClickListener {
 		hideKeyboard();
 
 		switch (v.getId()) {
-		/*case R.id.button_discover_printer:
+		case R.id.button_discover_printer:
 			intent = new Intent(this, com.example.is2.test2qrventory.SearchActivity.class);
 			startActivityForResult(intent, REQUEST_ACTIVITY_SEARCH);
-			break;*/
+			break;
 		case R.id.select_xml_button:
 			intent = new Intent(this, SelectXmlActivity.class);
 			if (_formNames != null) {
@@ -435,7 +441,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 
 		handler.postDelayed(new Runnable() {
 			public void run() {
-				//buttonDiscoverPrinter.setEnabled(!mode);
+				buttonDiscoverPrinter.setEnabled(!mode);
 				buttonSelectXml.setEnabled(!mode);
 				editTextInputData.setEnabled(!mode);
 				buttonPrint.setEnabled(!mode);
@@ -508,27 +514,30 @@ public class PrintActivity extends Activity implements OnClickListener {
 				if (_formNames.get(_jobNumber).equals("QRCode")) {
 					sampleDataProvider.setFormName(_formNames.get(_jobNumber) + SUFFIX);
 					int itemID = (int) singleItem.getId();
-					int eventID = (int) associatedEvent.getId();
-					String concatenatedCode = Integer.toString(eventID) + "," + Integer.toString(itemID);
-					sampleDataProvider.setQrCodeData(concatenatedCode); //set Item Identifier for QRCode Print
+					//int eventID = (int) associatedEvent.getId();
+					//String concatenatedCode = Integer.toString(eventID) + "," + Integer.toString(itemID);
+					sampleDataProvider.setQrCodeData(Integer.toString(itemID)); //set Item Identifier for QRCode Print
 				} else if (_formNames.get(_jobNumber).equals("Barcode")) {
 					sampleDataProvider.setFormName(_formNames.get(_jobNumber) + SUFFIX);
 					int itemID = (int) singleItem.getId();
-					int eventID = (int) associatedEvent.getId();
+					//int eventID = (int) associatedEvent.getId();
 
 					String barcodeType = sampleDataProvider.getBarcodeType();
-					String concatenatedCode = null;
+					//String concatenatedCode = null;
+					String itemIDPadded = null;
 					if ("Code-EAN8".equals(barcodeType)) {
-						String itemIDPadded = String.format("%04d", itemID);
-						String eventIDPadded = String.format("%03d", eventID);
-						concatenatedCode = eventIDPadded + itemIDPadded;
+						//String itemIDPadded = String.format("%04d", itemID);
+						//String eventIDPadded = String.format("%03d", eventID);
+						itemIDPadded = String.format("%07d", itemID);
+						//concatenatedCode = eventIDPadded + itemIDPadded;
 					} else if ("Code-EAN13".equals(barcodeType)) {
-						String itemIDPadded = String.format("%07d", itemID);
-						String eventIDPadded = String.format("%05d", eventID);
-						concatenatedCode = eventIDPadded + itemIDPadded;
+						//String itemIDPadded = String.format("%07d", itemID);
+						//String eventIDPadded = String.format("%05d", eventID);
+						itemIDPadded = String.format("%012d", itemID);
+						//concatenatedCode = eventIDPadded + itemIDPadded;
 					}
 
-					sampleDataProvider.setBarcodeData(concatenatedCode); //set Item Identifier for Barcode Print
+					sampleDataProvider.setBarcodeData(itemIDPadded); //set Item Identifier for Barcode Print
 				} else if (_formNames.get(_jobNumber).equals("String")) {
 					sampleDataProvider.setFormName("String" + SUFFIX);
 				}
@@ -652,7 +661,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 						"Bluetooth is not enabled.", Toast.LENGTH_SHORT).show();
 			}
 			break;
-		/*case REQUEST_ACTIVITY_SEARCH:
+		case REQUEST_ACTIVITY_SEARCH:
 			if (resultCode == RESULT_OK) {
 				Bundle extras = data.getExtras();
 				if (extras != null) {
@@ -696,7 +705,7 @@ public class PrintActivity extends Activity implements OnClickListener {
 							+ extras.getString("name"));
 				}
 			}
-			break;*/
+			break;
 		case REQUEST_ACTIVITY_SELECT_XML:
 			if (resultCode == RESULT_OK) {
 				Bundle extras = data.getExtras();

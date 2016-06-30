@@ -106,6 +106,10 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
 
         user = getActivity().getIntent().getParcelableExtra("user");
         singleEvent = getActivity().getIntent().getParcelableExtra("event");
+        if (singleEvent.getStatus() == 1) {
+            buttonEventStart.setVisibility(View.INVISIBLE);
+        }
+
 
         textViewTitle.setText(singleEvent.getName());
         textViewDescription.setText(singleEvent.getDescription());
