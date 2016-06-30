@@ -154,7 +154,8 @@
             android:name=".CreateDomainActivity"
             android:label="Create Domain" />
         <activity android:name=".CreateCategoryActivity" />
-        <activity android:name=".CreateItemActivity"></activity>
+        <activity android:name=".CreateItemActivity" />
+        <activity android:name=".CreateEventActivity"></activity>
     </application>
 
 </manifest>

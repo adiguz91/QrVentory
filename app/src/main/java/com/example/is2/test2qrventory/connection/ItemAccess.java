@@ -221,6 +221,7 @@ public class ItemAccess {
         JSONObject item_json = toJsonParser(item, domain_id, category_parent_id);
         item_json_body = item_json.toString();
 
+
         // Request a string response from the provided URL.
         StringRequest addItemRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

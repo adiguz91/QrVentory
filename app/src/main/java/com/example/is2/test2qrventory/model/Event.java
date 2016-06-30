@@ -99,7 +99,7 @@ public class Event implements Parcelable {
         Status = status;
     }
 
-    public boolean isAutoStart() {
+    public boolean getAutoStart() {
         return AutoStart;
     }
 

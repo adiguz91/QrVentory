@@ -8,6 +8,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.example.is2.test2qrventory.LoginActivity;
 import com.example.is2.test2qrventory.MainActivity;
@@ -22,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +39,7 @@ public class EventAccess {
     private String url ="http://qrventory.square7.ch/v1/event";
     private String userApiKey;
     private List<Event> events = new ArrayList<>();
+    private String event_json_body;
 
     public EventAccess(String userApiKey) {
         this.userApiKey = userApiKey;
@@ -171,6 +174,102 @@ public class EventAccess {
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(getRootCategoryRequest);
+    }
+
+    private JSONObject toJsonParser(Event event) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("Name", event.getName());
+            jsonObject.put("Description", event.getDescription());
+            jsonObject.put("Image", event.getImageURL());
+            jsonObject.put("StartDate", dateToString(event.getStartDate()));
+            jsonObject.put("EndDate", dateToString(event.getEndDate()));
+            jsonObject.put("Status", event.getStatus());
+            jsonObject.put("AutoStart", (event.getAutoStart() == true) ? 1 : 0);
+            jsonObject.put("Domain_IdDomain", event.getIdDomain());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    public void addEvent(final VolleyResponseListener listener, final Event event) {
+
+        JSONObject event_json = toJsonParser(event);
+        event_json_body = event_json.toString();
+
+        // Request a string response from the provided URL.
+        StringRequest addEventRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Event event_new = null;
+                        try {
+                            JSONObject json_response = new JSONObject(response);
+                            boolean isError = json_response.getBoolean("error");
+
+                            if(!isError) {
+                                long event_id = json_response.getLong("IdEvent");
+                                //String image_url = json_response.getString("Image");
+
+                                if(event_id > 0) {
+                                    event_new = event;
+                                    event_new.setId(event_id);
+                                    //category_new.setImageURL(image_url);
+                                } else {
+                                    event_new = null;
+                                }
+                            }
+
+                            //byte[] decodedString = Base64.decode(json_response.getString("image"), Base64.DEFAULT);
+                            //Bitmap bitmap_decoded = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            //user.setImage(bitmap_decoded);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        listener.onResponse(event_new);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //textViewResponse = (TextView) findViewById(R.id.textViewResponse);
+                        //textViewResponse.setText("That didn't work!");
+                        listener.onError(error.toString());
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("X-Authorization", userApiKey);
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return String.format("application/json; charset=utf-8");
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return event_json_body == null ? null : event_json_body.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                            event_json_body, "utf-8");
+                    return null;
+                }
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(addEventRequest);
+    }
+
+    private String dateToString(Date date) {
+        String date_string = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        return date_string;
     }
 
     private Date toDate(String date) {
