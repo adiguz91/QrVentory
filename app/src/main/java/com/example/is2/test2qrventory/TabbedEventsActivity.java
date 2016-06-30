@@ -1,6 +1,7 @@
 package com.example.is2.test2qrventory;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -52,6 +53,7 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
     User user = null;
     Event event = null;
     List<Event> events = new ArrayList<>();
+    private com.github.clans.fab.FloatingActionButton fab_add_event;
 
     public List<Event> getEvents() { return events; }
 
@@ -72,19 +74,30 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
         //mViewPager.setAdapter(mSectionsPagerAdapter);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        fab_add_event = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.menu_item_add_event);
+
+        fab_add_event.setOnClickListener(onAddEventHandler);
+
     }
+
+    View.OnClickListener onAddEventHandler = new View.OnClickListener() {
+        public void onClick(View v) {
+            //Intent intent = new Intent(getBaseContext(), CreateEventActivity.class);
+
+        }
+    };
 
     private void setupViewPager(ViewPager viewPager) {
         mSectionsPagerAdapter.addFragment(new OpenEventsFragment(), "Open Events");
