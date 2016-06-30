@@ -38,12 +38,78 @@ public class EventAccess {
 
     private String url ="http://qrventory.square7.ch/v1/event";
     private String url_event_status = "http://qrventory.square7.ch/v1/event-status";
+    private String url_event_single = "http://qrventory.square7.ch/v1/event-single";
     private String userApiKey;
     private List<Event> events = new ArrayList<>();
     private String event_json_body;
 
     public EventAccess(String userApiKey) {
         this.userApiKey = userApiKey;
+    }
+
+    public void getItem(final VolleyResponseListener listener, long event_id) {
+
+        String url_new = url_event_single += "/" + event_id;
+
+        // Request a string response from the provided URL.
+        StringRequest getEventRequest = new StringRequest(Request.Method.GET, url_new,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Event event = null;
+                        try {
+                            JSONObject item_response = new JSONObject(response);
+                            boolean isError = item_response.getBoolean("error");
+
+                            if(!isError) {
+                                event = new Event();
+                                event.setId(item_response.getLong("IdEvent"));
+                                event.setIdDomain(item_response.getLong("Domain_IdDomain"));
+                                event.setName(item_response.getString("Name"));
+                                event.setDescription(item_response.getString("Description"));
+                                event.setImageURL(item_response.getString("Image"));
+                                event.setAutoStart((item_response.getInt("AutoStart") == 1) ? true : false);
+                                event.setStatus(item_response.getInt("Status"));
+                                event.setStartDate(event.StringtoDateParser(item_response.getString("StartDate")));
+                                event.setEndDate(event.StringtoDateParser(item_response.getString("EndDate")));
+                            }
+
+                        } catch (JSONException e) {
+                            event = null;
+                            e.printStackTrace();
+                        }
+                        listener.onResponse(event);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //textViewResponse = (TextView) findViewById(R.id.textViewResponse);
+                        //textViewResponse.setText("That didn't work!");
+                        listener.onError(error.toString());
+                    }
+                }){
+            /*@Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("email", user.getEmail());
+                params.put("password", user.getPassword());
+                return params;
+            }*/
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("X-Authorization", userApiKey);
+                return params;
+            }
+        };
+
+        // Add the request to the RequestQueue.
+        //MainActivity.getInstance().getRequestQueue().add(stringRequest);
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(getEventRequest);
     }
 
     public void getEventsFromDomain(final VolleyResponseListener listener, long domain_id) {
