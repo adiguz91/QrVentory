@@ -202,6 +202,10 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
     @Override
     public void onResponse(Object response) {
 
+        if (response != null) {
+            String test = "";
+        }
+
     }
 
 
