@@ -108,6 +108,14 @@ public class OpenEventsFragment extends Fragment implements VolleyResponseListen
 
                 Event event = (Event) adapter.getItemAtPosition(position);
                 nextActivity(TabbedEventSingleActivity.class, event);
+
+                /*Intent intent = new Intent(getActivity().getBaseContext(), TabbedEventSingleActivity.class); //ItemActivity.class
+                //based on item add info to intent
+                intent.putExtra("user", user);
+                intent.putExtra("domain", domain);
+                intent.putExtra("event", event);
+
+                startActivity(intent);*/
             }
         });
 
