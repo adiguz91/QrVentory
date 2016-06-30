@@ -51,7 +51,8 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
     private TabLayout tabLayout;
     private ProgressDialog pDialog;
     User user = null;
-    Event event = null;
+    Domain domain = null;
+    //Event event = null;
     List<Event> events = new ArrayList<>();
     private com.github.clans.fab.FloatingActionButton fab_add_event;
 
@@ -61,6 +62,9 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed_events);
+
+        user = getIntent().getParcelableExtra("user");
+        domain = getIntent().getParcelableExtra("domain");
 
         /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
@@ -94,8 +98,10 @@ public class TabbedEventsActivity extends AppCompatActivity implements ClosedEve
 
     View.OnClickListener onAddEventHandler = new View.OnClickListener() {
         public void onClick(View v) {
-            //Intent intent = new Intent(getBaseContext(), CreateEventActivity.class);
-
+            Intent intent = new Intent(getBaseContext(), CreateEventActivity.class);
+            intent.putExtra("user", user);
+            intent.putExtra("domain_id", domain.getIdDomain());
+            startActivity(intent);
         }
     };
 

@@ -268,7 +268,10 @@ public class EventAccess {
     }
 
     private String dateToString(Date date) {
-        String date_string = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        String date_string = "";
+        if(date != null) {
+            date_string = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        }
         return date_string;
     }
 
