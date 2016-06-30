@@ -171,19 +171,15 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
                     startActivity(getActivity().getIntent());
                 }
 
-                if (event.getStatus() == 1) {
+                items.clear();
+                items.addAll((List<Item>) response);
+                adapter.notifyDataSetChanged();
+
+                /*if (event.getStatus() == 1) {
                     items.clear();
                     items.addAll((List<Item>) response);
-
-            /*for (int item_count = 0; item_count < ((List<Item>) response).size(); item_count++) {
-                Item item = ((List<Item>) response).get(item_count);
-                items.add(item);
-            }*/
-
-                    // notifying list adapter about data changes
-                    // so that it renders the list view with updated data
                     adapter.notifyDataSetChanged();
-                }
+                }*/
             } catch (Exception e) {
                 boolean isUpdatedStatus = (Boolean) response;
                 if(isUpdatedStatus) {

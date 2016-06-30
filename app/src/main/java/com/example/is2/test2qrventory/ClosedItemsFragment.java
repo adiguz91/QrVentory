@@ -46,6 +46,8 @@ public class ClosedItemsFragment extends Fragment implements VolleyResponseListe
     private CustomItemListAdapter adapter;
     ListView listViewClosedItems;
 
+    View rootView;
+
     public ClosedItemsFragment() {
         // Required empty public constructor
     }
@@ -78,17 +80,6 @@ public class ClosedItemsFragment extends Fragment implements VolleyResponseListe
 
         event = getActivity().getIntent().getParcelableExtra("event");
         user = getActivity().getIntent().getParcelableExtra("user");
-        String userApiKey = user.getApiKey();
-        ItemAccess itemAccess = new ItemAccess(userApiKey);
-        itemAccess.getEventItemsThatExists(this, event.getIdDomain(), event.getId());
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-        View rootView = inflater.inflate(R.layout.fragment_closed_items, container, false);
 
         listViewClosedItems = (ListView) rootView.findViewById(R.id.list_view_closed_items);
 
@@ -105,6 +96,16 @@ public class ClosedItemsFragment extends Fragment implements VolleyResponseListe
             }
         });
 
+        String userApiKey = user.getApiKey();
+        ItemAccess itemAccess = new ItemAccess(userApiKey);
+        itemAccess.getEventItemsThatExists(this, event.getIdDomain(), event.getId());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        rootView = inflater.inflate(R.layout.fragment_closed_items, container, false);
         return rootView;
     }
 
@@ -155,14 +156,6 @@ public class ClosedItemsFragment extends Fragment implements VolleyResponseListe
             if (event.getStatus() == 1) {
                 items.clear();
                 items.addAll((List<Item>) response);
-
-            /*for (int item_count = 0; item_count < ((List<Item>) response).size(); item_count++) {
-                Item item = ((List<Item>) response).get(item_count);
-                items.add(item);
-            }*/
-
-                // notifying list adapter about data changes
-                // so that it renders the list view with updated data
                 adapter.notifyDataSetChanged();
             }
         }

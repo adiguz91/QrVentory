@@ -103,7 +103,7 @@ public class ClosedEventsFragment extends Fragment implements VolleyResponseList
                                     int position, long id) {
 
                 Event event = (Event) adapter.getItemAtPosition(position);
-                nextActivity(EventSingleActivity.class, event);
+                nextActivity(TabbedEventSingleActivity.class, event);
             }
         });
 
@@ -160,9 +160,9 @@ public class ClosedEventsFragment extends Fragment implements VolleyResponseList
             for (int event_count = 0; event_count < ((List<Event>) response).size(); event_count++) {
                 Event event = ((List<Event>) response).get(event_count);
                 int event_status = event.getStatus();
-                if (event_status == 1) {
+                //if (event_status == 1) {
                     events.add(event);
-                }
+                //}
             }
 
             // notifying list adapter about data changes

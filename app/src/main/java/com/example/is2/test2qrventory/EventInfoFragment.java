@@ -1,6 +1,7 @@
 package com.example.is2.test2qrventory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -51,6 +52,8 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
     Domain domain;
     EventAccess eventAccess = null;
 
+    View rootView;
+
     private OnFragmentInteractionListener mListener;
 
     public EventInfoFragment() {
@@ -84,6 +87,7 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
         }
 
         user = getActivity().getIntent().getParcelableExtra("user");
+        singleEvent = getActivity().getIntent().getParcelableExtra("event");
         //domain = getActivity().getIntent().getParcelableExtra("domain");
         //long domain_id = domain.getIdDomain();
         String userApiKey = user.getApiKey();
@@ -94,8 +98,18 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_event_info, container, false);
+        rootView = inflater.inflate(R.layout.fragment_event_info, container, false);
 
+        updateEvent(rootView);
+
+        /*TabHost tabHost = (TabHost) getActivity().findViewById(android.R.id.tabhost);
+        tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
+        tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);*/
+
+        return rootView;
+    }
+
+    private void updateEvent(View rootView) {
         textViewTitle = (TextView) rootView.findViewById(R.id.textViewTitle);
         textViewDescription = (TextView) rootView.findViewById(R.id.textViewDescription);
         buttonEventStart = (Button) rootView.findViewById(R.id.button_event_start);
@@ -107,8 +121,7 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
             }
         });
 
-        user = getActivity().getIntent().getParcelableExtra("user");
-        singleEvent = getActivity().getIntent().getParcelableExtra("event");
+
         if (singleEvent.getStatus() == 1) {
             buttonEventStart.setVisibility(View.INVISIBLE);
         }
@@ -116,14 +129,6 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
 
         textViewTitle.setText(singleEvent.getName());
         textViewDescription.setText(singleEvent.getDescription());
-
-        /*TabHost tabHost = (TabHost) getActivity().findViewById(android.R.id.tabhost);
-        tabHost.getTabWidget().getChildTabViewAt(2).setEnabled(false);
-        tabHost.getTabWidget().getChildTabViewAt(3).setEnabled(false);*/
-
-
-
-        return rootView;
     }
 
     public void setEventStatus(long eventId, int status) {
@@ -162,35 +167,16 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
     @Override
     public void onResponse(Object response) {
 
-        /*if (response != null) {
+        if (response != null) {
             try {
-
-                List<Item> temp_list = (List<Item>) response;
-
-                items.clear();
-                    //events.addAll((List<Event>) response);
-
-                for (int item_count = 0; item_count < temp_list.size(); item_count++) {
-                    Item item = ((List<Item>) response).get(item_count);
-                    items.add(item);
-                }
-
-                    // notifying list adapter about data changes
-                    // so that it renders the list view with updated data
-                    //adapter.notifyDataSetChanged();
-            } catch (Exception e) {
                 boolean isUpdatedStatus = (Boolean) response;
                 if(isUpdatedStatus) {
-
+                    eventAccess.getEvent(this, singleEvent.getId());
                 }
-            }
-        }*/
+            } catch (Exception ex) {
+                singleEvent = (Event) response;
+                updateEvent(rootView);
 
-        if (response != null) {
-            boolean isUpdatedStatus = (Boolean) response;
-            if(isUpdatedStatus) {
-                getActivity().finish();
-                startActivity(getActivity().getIntent());
             }
         }
     }
