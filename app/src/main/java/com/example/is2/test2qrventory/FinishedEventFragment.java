@@ -81,6 +81,8 @@ public class FinishedEventFragment extends Fragment implements VolleyResponseLis
         domain = getActivity().getIntent().getParcelableExtra("domain");
         EventAccess eventAccess = new EventAccess(user.getApiKey());
         eventAccess.getEventsFromDomain(this, domain.getIdDomain());
+
+        adapter = new CustomEventListAdapter((TabbedEventsActivity) getActivity(), events);
     }
 
     @Override
@@ -91,7 +93,7 @@ public class FinishedEventFragment extends Fragment implements VolleyResponseLis
         View rootView = inflater.inflate(R.layout.fragment_finished_event, container, false);
         listViewFinishedEvents = (ListView) rootView.findViewById(R.id.list_view_finished_events);
 
-        adapter = new CustomEventListAdapter((TabbedEventsActivity) getActivity(), events); // category.getSubcategories()
+        //adapter = new CustomEventListAdapter((TabbedEventsActivity) getActivity(), events); // category.getSubcategories()
 
         listViewFinishedEvents.setAdapter(adapter);
 

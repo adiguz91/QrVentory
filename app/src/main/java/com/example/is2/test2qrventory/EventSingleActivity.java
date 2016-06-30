@@ -25,16 +25,19 @@ public class EventSingleActivity extends AppCompatActivity {
 
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
         textViewDescription = (TextView) findViewById(R.id.textViewDescription);
-        buttonEventStart = (Button) findViewById(R.id.button_event_start);
+        /*buttonEventStart = (Button) findViewById(R.id.button_event_start);
         buttonEventStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //do stuff
             }
-        });
+        });*/
 
         user = getIntent().getParcelableExtra("user");
         singleEvent = getIntent().getParcelableExtra("event");
+        /*if (singleEvent.getStatus() == 1) {
+            buttonEventStart.setVisibility(View.INVISIBLE);
+        }*/
 
         textViewTitle.setText(singleEvent.getName());
         textViewDescription.setText(singleEvent.getDescription());
