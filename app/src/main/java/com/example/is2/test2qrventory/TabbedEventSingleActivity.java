@@ -140,6 +140,9 @@ public class TabbedEventSingleActivity extends AppCompatActivity implements Voll
                         }
 
                         eventAccess.setEventItemChecked(this, event.getId(), Long.parseLong(itemId));
+
+                        finish();
+                        startActivity(getIntent());
                         //itemAccess.getEventItemsThatNotExists(this, event.getIdDomain(), event.getId());
                     }
                 }

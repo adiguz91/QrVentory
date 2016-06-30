@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.is2.test2qrventory.connection.ItemAccess;
+import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Item;
 import com.example.is2.test2qrventory.model.User;
 import com.example.is2.test2qrventory.scanner.CameraPreview;
@@ -25,7 +26,7 @@ import net.sourceforge.zbar.ImageScanner;
 import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 
-public class SearchItemScannerActivity extends AppCompatActivity {
+public class SearchItemScannerActivity extends AppCompatActivity implements VolleyResponseListener {
 
     private Camera mCamera;
     private CameraPreview mPreview;
@@ -61,6 +62,7 @@ public class SearchItemScannerActivity extends AppCompatActivity {
 
         String userApiKey = user.getApiKey();
         itemAccess = new ItemAccess(userApiKey);
+
     }
 
     private void requestPermissionForCameraAndActivation() {
@@ -145,7 +147,7 @@ public class SearchItemScannerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (barcodeScanned) {
                     barcodeScanned = false;
-                    scanText.setText("Scanning...");
+                    //scanText.setText("Scanning...");
                     mCamera.setPreviewCallback(previewCb);
                     mCamera.startPreview();
                     previewing = true;
@@ -203,25 +205,32 @@ public class SearchItemScannerActivity extends AppCompatActivity {
 
                 SymbolSet syms = scanner.getResults();
                 for (Symbol sym : syms) {
-                    scanText.setText("barcode result " + sym.getData());
+                    //scanText.setText("barcode result " + sym.getData());
                     barcodeScanned = true;
 
-                    //sampleDataProvider.setQrCodeData(sym.getData());
-                    int form_type = sym.getType();
                     String content = sym.getData();
-                    long itemId = Long.parseLong(content);
+                    int type = sym.getType();
 
-                    //itemAccess.getItem(itemId);
-                    Intent intent = new Intent(getBaseContext(), ItemActivity.class); //ItemActivity.class
-                    intent.putExtra("user", user);
-                    intent.putExtra("item", item);
+                    long itemId = 0;
+                    if (type == 8 || type == 13) {
+                        content = content.substring(0, content.length() - 1);
+                        content = Integer.valueOf(content).toString();
+                        itemId = Long.parseLong(content);
+                    } else if (type == 64){
+                        itemId = Long.parseLong(content);
+                    }
 
-                    startActivity(intent);
+
+                    getItemById(itemId);
 
                 }
             }
         }
     };
+
+    public void getItemById(long itemId) {
+        itemAccess.getItem(this, itemId);
+    }
 
     // Mimic continuous auto-focusing
     Camera.AutoFocusCallback autoFocusCB = new Camera.AutoFocusCallback() {
@@ -229,4 +238,23 @@ public class SearchItemScannerActivity extends AppCompatActivity {
             autoFocusHandler.postDelayed(doAutoFocus, 1000);
         }
     };
+
+    @Override
+    public void onError(String message) {
+
+    }
+
+    @Override
+    public void onResponse(Object response) {
+
+        if (response != null) {
+            Item item = (Item) response;
+            Intent intent = new Intent(getBaseContext(), ItemActivity.class); //ItemActivity.class
+            intent.putExtra("user", user);
+            intent.putExtra("item", item);
+
+            startActivity(intent);
+        }
+
+    }
 }

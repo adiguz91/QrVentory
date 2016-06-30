@@ -208,10 +208,10 @@ public class NotificationAlarmServiceActivity extends Service implements VolleyR
                     Intent intent1 = new Intent(this.getApplicationContext(), TabbedEventSingleActivity.class);
                     intent1.putExtra("user", user);
                     intent1.putExtra("event", currentEvent);
-                    intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); //Intent.FLAG_ACTIVITY_SINGLE_TOP
                     intent1.setAction(Long.toString(System.currentTimeMillis()));
 
-                    pendingNotificationIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_ONE_SHOT); //PendingIntent.FLAG_UPDATE_CURRENT
+                    pendingNotificationIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT); //PendingIntent.FLAG_UPDATE_CURRENT
 
                     String startDate = currentEvent.DateToStringParser(currentEvent.getStartDate());
                     String endDate = currentEvent.DateToStringParser(currentEvent.getEndDate());
@@ -282,10 +282,10 @@ public class NotificationAlarmServiceActivity extends Service implements VolleyR
                         Intent intent1 = new Intent(this.getApplicationContext(), TabbedEventSingleActivity.class);
                         intent1.putExtra("user", user);
                         intent1.putExtra("event", currentEvent);
-                        intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP); //Intent.FLAG_ACTIVITY_NEW_TASK
                         intent1.setAction(Long.toString(System.currentTimeMillis()));
 
-                        pendingNotificationIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_ONE_SHOT); //PendingInte
+                        pendingNotificationIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT); //PendingInte
 
                         Notification.Builder builder = new Notification.Builder(NotificationAlarmServiceActivity.this);
                         builder.setSmallIcon(android.R.drawable.stat_sys_download) //android.R.drawable.stat_sys_download
