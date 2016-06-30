@@ -53,29 +53,27 @@ public class ItemAccess {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Log.d("DEBUG", response);
-
-                        JSONObject item_response = null;
+                        item = null;
                         try {
-                            item_response = new JSONObject(response);
+                            JSONObject item_response = new JSONObject(response);
+                            boolean isError = item_response.getBoolean("error");
 
-                            item.setId(item_response.getLong("IdItem"));
-                            item.setName(item_response.getString("Name"));
-                            item.setDescription(item_response.getString("Description"));
-                            item.setBarcodeURL(item_response.getString("Barcode"));
-                            item.setQRcodeURL(item_response.getString("QRcode"));
-                            item.setImageURL(item_response.getString("Image"));
-                            item.setIsQR((item_response.getInt("IsQR") == 1) ? true : false);
-
-                            //byte[] decodedString = Base64.decode(json_response.getString("image"), Base64.DEFAULT);
-                            //Bitmap bitmap_decoded = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                            //user.setImage(bitmap_decoded);
-
-                            listener.onResponse(item);
+                            if(!isError) {
+                                item = new Item();
+                                item.setId(item_response.getLong("IdItem"));
+                                item.setName(item_response.getString("Name"));
+                                item.setDescription(item_response.getString("Description"));
+                                item.setBarcodeURL(item_response.getString("Barcode"));
+                                item.setQRcodeURL(item_response.getString("QRcode"));
+                                item.setImageURL(item_response.getString("Image"));
+                                item.setIsQR((item_response.getInt("IsQR") == 1) ? true : false);
+                            }
 
                         } catch (JSONException e) {
+                            item = null;
                             e.printStackTrace();
                         }
+                        listener.onResponse(item);
                     }
                 },
                 new Response.ErrorListener() {

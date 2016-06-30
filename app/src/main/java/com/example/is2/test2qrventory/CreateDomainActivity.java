@@ -2,10 +2,12 @@ package com.example.is2.test2qrventory;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ import com.example.is2.test2qrventory.connection.DomainAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Domain;
 import com.example.is2.test2qrventory.model.User;
+import com.example.is2.test2qrventory.util.ImageHelper;
 import com.github.clans.fab.FloatingActionButton;
 
 import java.io.IOException;
@@ -71,7 +74,8 @@ public class CreateDomainActivity extends AppCompatActivity implements VolleyRes
         domain_to_save.setDescription(description);
 
         if(image_upload != null) {
-            domain_to_save.setImageURL(image_upload.toString());
+            ImageHelper imageHelper = new ImageHelper(image_upload, getDisplaySize().x);
+            domain_to_save.setImageURL(imageHelper.encodeBitmap(imageHelper.scaleAndCompression()));
         }
 
         DomainAccess domainAccess = new DomainAccess(user.getApiKey());
@@ -85,6 +89,15 @@ public class CreateDomainActivity extends AppCompatActivity implements VolleyRes
         intent.setAction(Intent.ACTION_GET_CONTENT);
         // Always show the chooser (if there are multiple options available)
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    private Point getDisplaySize() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        //int width = size.x;
+        //int height = size.y;
+        return size;
     }
 
     @Override

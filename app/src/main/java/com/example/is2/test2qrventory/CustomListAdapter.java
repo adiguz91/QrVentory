@@ -58,32 +58,20 @@ public class CustomListAdapter extends BaseAdapter {
                 .findViewById(R.id.thumbnail);
         TextView title = (TextView) convertView.findViewById(R.id.title);
         TextView rating = (TextView) convertView.findViewById(R.id.rating);
-        //TextView genre = (TextView) convertView.findViewById(R.id.genre);
-        //TextView year = (TextView) convertView.findViewById(R.id.releaseYear);
 
         // getting movie data for the row
         Domain d = domains.get(position);
 
         // thumbnail image
-        //thumbNail.setImageUrl(d.getThumbnailUrl(), imageLoader);
+        if(d.getImageURL() != null && d.getImageURL() != "") {
+            thumbNail.setImageUrl(d.getImageURL(), imageLoader);
+        }
 
         // title
         title.setText(d.getName());
 
         // rating
         rating.setText("Beschreibung: " + String.valueOf(d.getDescription()));
-
-        // genre
-        /*String genreStr = "";
-        for (String str : d.getGenre()) {
-            genreStr += str + ", ";
-        }
-        genreStr = genreStr.length() > 0 ? genreStr.substring(0,
-                genreStr.length() - 2) : genreStr;
-        genre.setText(genreStr);*/
-
-        // release year
-        //year.setText(String.valueOf(m.getYear()));
 
         return convertView;
     }
