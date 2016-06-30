@@ -81,6 +81,19 @@ public class ClosedItemsFragment extends Fragment implements VolleyResponseListe
         event = getActivity().getIntent().getParcelableExtra("event");
         user = getActivity().getIntent().getParcelableExtra("user");
 
+
+
+        String userApiKey = user.getApiKey();
+        ItemAccess itemAccess = new ItemAccess(userApiKey);
+        itemAccess.getEventItemsThatExists(this, event.getIdDomain(), event.getId());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        rootView = inflater.inflate(R.layout.fragment_closed_items, container, false);
+
         listViewClosedItems = (ListView) rootView.findViewById(R.id.list_view_closed_items);
 
         adapter = new CustomItemListAdapter((TabbedEventSingleActivity) getActivity(), items); // category.getSubcategories()
@@ -95,17 +108,6 @@ public class ClosedItemsFragment extends Fragment implements VolleyResponseListe
                 nextActivity(ItemActivity.class, item);
             }
         });
-
-        String userApiKey = user.getApiKey();
-        ItemAccess itemAccess = new ItemAccess(userApiKey);
-        itemAccess.getEventItemsThatExists(this, event.getIdDomain(), event.getId());
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_closed_items, container, false);
         return rootView;
     }
 
