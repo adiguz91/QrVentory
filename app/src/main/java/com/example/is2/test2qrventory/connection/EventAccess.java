@@ -47,7 +47,7 @@ public class EventAccess {
         this.userApiKey = userApiKey;
     }
 
-    public void getItem(final VolleyResponseListener listener, long event_id) {
+    public void getEvent(final VolleyResponseListener listener, long event_id) {
 
         String url_new = url_event_single += "/" + event_id;
 
