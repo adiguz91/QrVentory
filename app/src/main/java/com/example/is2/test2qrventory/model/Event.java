@@ -163,4 +163,15 @@ public class Event implements Parcelable {
         return dateTimeStr;
     }
 
+    public Date StringtoDateParser(String date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date currentDate;
+        try {
+            currentDate = formatter.parse(date);
+        } catch (Exception ex) {
+            currentDate = null;
+        }
+        return currentDate;
+    }
+
 }

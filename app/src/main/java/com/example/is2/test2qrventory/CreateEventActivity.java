@@ -2,18 +2,21 @@ package com.example.is2.test2qrventory;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.is2.test2qrventory.connection.EventAccess;
@@ -37,19 +40,20 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     private Bitmap image_upload = null;
     private Toast toast;
 
+    private SimpleDateFormat timeFormatter;
     private SimpleDateFormat dateFormatter;
     private DatePickerDialog startDatePickerDialog;
     private DatePickerDialog endDatePickerDialog;
-    private Calendar calendar;
+    private TimePickerDialog startTimePickerDialog;
+    private TimePickerDialog endTimePickerDialog;
     private EditText textStartDate;
     private EditText textEndDate;
     private EditText textStartTime;
     private EditText textEndTime;
-    private int year, month, day;
+    //private int year, month, day;
 
     private User user = null;
     private long domain_id = 0;
-    //private int category_parent_id = 0;
     private Event event_to_save = null;
     private Event event_response = null;
 
@@ -65,6 +69,20 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         textEndDate = (EditText) findViewById(R.id.textEditEndDate);
         textStartTime = (EditText) findViewById(R.id.textEditStartTime);
         textEndTime = (EditText) findViewById(R.id.textEditEndTime);
+
+        textStartDate.setInputType(InputType.TYPE_NULL);
+        textEndDate.setInputType(InputType.TYPE_NULL);
+
+        textStartTime.setInputType(InputType.TYPE_NULL);
+        textEndTime.setInputType(InputType.TYPE_NULL);
+
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        timeFormatter = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+        String current_time = timeFormatter.format(Calendar.getInstance().getTime());
+
+        textStartTime.setText(current_time);
+        textEndTime.setText(current_time);
 
         fab_save = (FloatingActionButton) findViewById(R.id.fab_save_event);
         fab_save.setOnClickListener(onSaveEventHandler);
@@ -82,15 +100,14 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
+        setDateField();
+        setTimeField();
     }
-
-
 
     /* datepicker --------------------------------------------------------------------------------*/
 
-    private void setDateTimeField() {
+    private void setDateField() {
         textStartDate.setOnClickListener(this);
         textEndDate.setOnClickListener(this);
 
@@ -116,6 +133,31 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
+    private void setTimeField() {
+        textStartTime.setOnClickListener(this);
+        textEndTime.setOnClickListener(this);
+
+        Calendar newTime = Calendar.getInstance();
+        startTimePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String time = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute) + ":" + "00";
+                textStartTime.setText(time);
+            }
+        },newTime.get(Calendar.HOUR), newTime.get(Calendar.MINUTE), true);
+
+        endTimePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String time = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute) + ":" + "00";
+                textEndTime.setText(time);
+            }
+
+        },newTime.get(Calendar.HOUR), newTime.get(Calendar.MINUTE), true);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -130,33 +172,48 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         } else if(view == textEndDate) {
             endDatePickerDialog.show();
         }
+
+        if(view == textStartTime) {
+            startTimePickerDialog.show();
+        } else if(view == textEndTime) {
+            endTimePickerDialog.show();
+        }
     }
 
     /*--------------------------------------------------------------------------------------------*/
 
     View.OnClickListener onSaveEventHandler = new View.OnClickListener() {
         public void onClick(View v) {
-            saveCategory();
+            /*if(textStartDate.getText().toString() != null && textStartDate.getText().toString() != "" &&
+                    textStartTime.getText().toString() != null && textStartTime.getText().toString() != "" &&
+                    textEndDate.getText().toString() != null && textEndDate.getText().toString() != "" &&
+                    textEndTime.getText().toString() != null && textEndTime.getText().toString() != "") {
+                saveEvent();
+            } else {
+                ShowToastMessage("Please select Datetime");
+            }*/
+            saveEvent();
         }
     };
 
-    private void saveCategory() {
+    private void saveEvent() {
         // save into database
         String name = textEditName.getText().toString();
         String description = textEditDescription.getText().toString();
         int status = 0; // 0 == inaktive == not started
 
-        String start_date = textStartDate.getText().toString();
-        String end_date = textEndDate.getText().toString();
-
         event_to_save = new Event();
+
+        String start_datetime = textStartDate.getText().toString() + " " + textStartTime.getText().toString();
+        String end_datetime = textEndDate.getText().toString() + " " + textEndTime.getText().toString();
+
         event_to_save.setName(name);
         event_to_save.setDescription(description);
         event_to_save.setAutoStart(false);
         event_to_save.setIdDomain(domain_id);
         event_to_save.setStatus(status);
-        //event_to_save.setStartDate();
-        //event_to_save.setEndDate();
+        event_to_save.setStartDate(event_to_save.StringtoDateParser(start_datetime));
+        event_to_save.setEndDate(event_to_save.StringtoDateParser(end_datetime));
 
         if(image_upload != null) {
             event_to_save.setImageURL(image_upload.toString());
