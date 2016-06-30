@@ -152,17 +152,19 @@ public class ClosedItemsFragment extends Fragment implements VolleyResponseListe
     public void onResponse(Object response) {
         if(response != null)
         {
-            items.clear();
-            items.addAll((List<Item>) response);
+            if (event.getStatus() == 1) {
+                items.clear();
+                items.addAll((List<Item>) response);
 
             /*for (int item_count = 0; item_count < ((List<Item>) response).size(); item_count++) {
                 Item item = ((List<Item>) response).get(item_count);
                 items.add(item);
             }*/
 
-            // notifying list adapter about data changes
-            // so that it renders the list view with updated data
-            adapter.notifyDataSetChanged();
+                // notifying list adapter about data changes
+                // so that it renders the list view with updated data
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 

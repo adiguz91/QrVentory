@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.is2.test2qrventory.connection.EventAccess;
 import com.example.is2.test2qrventory.connection.ItemAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
 import com.example.is2.test2qrventory.model.Event;
@@ -45,6 +46,7 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
     ListView listViewOpenItems = null;
     private CustomItemListAdapter adapter;
     Event event = null;
+    EventAccess eventAccess = null;
 
     public OpenItemsFragment() {
         // Required empty public constructor
@@ -81,6 +83,9 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
         String userApiKey = user.getApiKey();
         ItemAccess itemAccess = new ItemAccess(userApiKey);
         itemAccess.getEventItemsThatNotExists(this, event.getIdDomain(), event.getId());
+
+        eventAccess = new EventAccess(userApiKey);
+
     }
 
     @Override
@@ -158,17 +163,34 @@ public class OpenItemsFragment extends Fragment implements VolleyResponseListene
     public void onResponse(Object response) {
         if(response != null)
         {
-            items.clear();
-            items.addAll((List<Item>) response);
+            try {
+                int size = ((List<Item>) response).size();
+                if (size == 0) {
+                    eventAccess.updateEventStatus(this, event.getId(), 2);
+                    getActivity().finish();
+                    startActivity(getActivity().getIntent());
+                }
+
+                if (event.getStatus() == 1) {
+                    items.clear();
+                    items.addAll((List<Item>) response);
 
             /*for (int item_count = 0; item_count < ((List<Item>) response).size(); item_count++) {
                 Item item = ((List<Item>) response).get(item_count);
                 items.add(item);
             }*/
 
-            // notifying list adapter about data changes
-            // so that it renders the list view with updated data
-            adapter.notifyDataSetChanged();
+                    // notifying list adapter about data changes
+                    // so that it renders the list view with updated data
+                    adapter.notifyDataSetChanged();
+                }
+            } catch (Exception e) {
+                boolean isUpdatedStatus = (Boolean) response;
+                if(isUpdatedStatus) {
+
+                }
+            }
+
         }
     }
 

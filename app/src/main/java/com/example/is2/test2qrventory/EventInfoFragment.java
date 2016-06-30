@@ -189,7 +189,8 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
         if (response != null) {
             boolean isUpdatedStatus = (Boolean) response;
             if(isUpdatedStatus) {
-
+                getActivity().finish();
+                startActivity(getActivity().getIntent());
             }
         }
     }
