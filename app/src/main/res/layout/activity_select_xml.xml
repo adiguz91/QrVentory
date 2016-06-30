@@ -11,10 +11,8 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:background="@color/dodgerblue"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:textColor="@android:color/white"
             android:text="@string/function_name_select_xml"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 

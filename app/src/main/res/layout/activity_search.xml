@@ -7,10 +7,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/dodgerblue"
         android:gravity="center"
         android:text="@string/title_discover_printer"
-        android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ListView

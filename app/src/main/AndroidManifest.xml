@@ -146,12 +146,14 @@
         <!-- android:theme="@style/AppTheme.NoActionBar"></activity> -->
         <activity
             android:name=".TabbedEventSingleActivity"
-            android:label="@string/title_activity_tabbed_event_single" />
+            android:label="@string/title_activity_tabbed_event_single"
+            android:launchMode="singleTop" />
         <!-- android:theme="@style/AppTheme"></activity> -->
         <activity
             android:name=".CreateDomainActivity"
             android:label="Create Domain" />
         <activity android:name=".CreateCategoryActivity" />
+        <activity android:name=".SearchItemScannerActivity"></activity>
         <activity android:name=".CreateItemActivity" />
         <activity android:name=".CreateEventActivity"></activity>
     </application>

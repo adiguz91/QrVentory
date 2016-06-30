@@ -27,6 +27,8 @@ public class ItemActivity extends AppCompatActivity {
     private FloatingActionButton fab_delete;
     private FloatingActionButton fab_print;
 
+    //boolean itemWithout
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,14 @@ public class ItemActivity extends AppCompatActivity {
         // Fetching data from a parcelable object passed from CategoryItemActivity
         user = getIntent().getParcelableExtra("user");
         singleItem = getIntent().getParcelableExtra("item");
-        associatedEvent = getIntent().getParcelableExtra("event"); //new
+
+        try {
+            associatedEvent = getIntent().getParcelableExtra("event"); //new
+        } catch(Exception e) {
+            //do nothing
+        }
+
+
 
         textViewTitle.setText(singleItem.getName());
         textViewDescription.setText(singleItem.getDescription());

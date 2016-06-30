@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity
         } /*else if (id == R.id.nav_printer) {
             nextActivity(PrintActivity.class);
         } */else if (id == R.id.nav_scanner) {
-            nextActivity(ScanActivity.class);
+            nextActivity(SearchItemScannerActivity.class, user);
         } /*else if (id == R.id.nav_settings) {
             nextActivity(SettingsActivity.class);
         } */else if (id == R.id.nav_share) {

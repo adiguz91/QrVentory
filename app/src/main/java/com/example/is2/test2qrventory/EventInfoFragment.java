@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.is2.test2qrventory.connection.EventAccess;
 import com.example.is2.test2qrventory.connection.VolleyResponseListener;
+import com.example.is2.test2qrventory.model.Domain;
 import com.example.is2.test2qrventory.model.Event;
 import com.example.is2.test2qrventory.model.Item;
 import com.example.is2.test2qrventory.model.User;
@@ -47,6 +48,8 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
     User user = null;
     Event singleEvent = null;
     List<Item> items = new ArrayList<>();
+    Domain domain;
+    EventAccess eventAccess = null;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,10 +84,10 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
         }
 
         user = getActivity().getIntent().getParcelableExtra("user");
-        /*long domain_id = 1;
+        //domain = getActivity().getIntent().getParcelableExtra("domain");
+        //long domain_id = domain.getIdDomain();
         String userApiKey = user.getApiKey();
-        ItemAccess itemAccess = new ItemAccess(userApiKey);
-        itemAccess.getItems(this, domain_id);*/
+        eventAccess = new EventAccess(userApiKey);
     }
 
     @Override
@@ -99,8 +102,8 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
         buttonEventStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                singleEvent.setStatus(1);
-                //event DB UPDATE vom ADI
+                setEventStatus(singleEvent.getId(), 1);
+
             }
         });
 
@@ -121,6 +124,10 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
 
 
         return rootView;
+    }
+
+    public void setEventStatus(long eventId, int status) {
+        eventAccess.updateEventStatus(this, eventId, status);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -154,19 +161,36 @@ public class EventInfoFragment extends Fragment implements VolleyResponseListene
 
     @Override
     public void onResponse(Object response) {
-        if(response != null)
-        {
-            items.clear();
-            //events.addAll((List<Event>) response);
 
-            for (int item_count = 0; item_count < ((List<Item>) response).size(); item_count++) {
-                Item item = ((List<Item>) response).get(item_count);
-                items.add(item);
+        /*if (response != null) {
+            try {
+
+                List<Item> temp_list = (List<Item>) response;
+
+                items.clear();
+                    //events.addAll((List<Event>) response);
+
+                for (int item_count = 0; item_count < temp_list.size(); item_count++) {
+                    Item item = ((List<Item>) response).get(item_count);
+                    items.add(item);
+                }
+
+                    // notifying list adapter about data changes
+                    // so that it renders the list view with updated data
+                    //adapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                boolean isUpdatedStatus = (Boolean) response;
+                if(isUpdatedStatus) {
+
+                }
             }
+        }*/
 
-            // notifying list adapter about data changes
-            // so that it renders the list view with updated data
-            //adapter.notifyDataSetChanged();
+        if (response != null) {
+            boolean isUpdatedStatus = (Boolean) response;
+            if(isUpdatedStatus) {
+
+            }
         }
     }
 
