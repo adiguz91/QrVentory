@@ -109,6 +109,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        //When BACK BUTTON is pressed, the activity on the stack is restarted
+        //Do what you want on the refresh procedure here
+        String userApiKey = user.getApiKey();
+        DomainAccess domainAccess = new DomainAccess(userApiKey);
+        domainAccess.getDomains(this);
+    }
+
     private void initListView() {
         listView = (ListView) findViewById(R.id.list);
         adapter = new CustomListAdapter(this, domains);
@@ -212,6 +222,7 @@ public class MainActivity extends AppCompatActivity
         hidePDialog();
 
         List<Domain> new_domains = (List<Domain>) response;
+        domains.clear();
         domains.addAll(new_domains);
 
         // notifying list adapter about data changes
